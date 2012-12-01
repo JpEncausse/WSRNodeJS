@@ -26,8 +26,10 @@ var loadPlugins = function(folder, conf){
     // Ends with .prop
     if (file.endsWith('.prop')){
       console.log('Loading plugin properties %s ...', path);
-      var json   =  fs.readFileSync(path,'utf8');
-      var plugin = JSON.parse(json);
+      try {
+        var json   =  fs.readFileSync(path,'utf8');
+        var plugin = JSON.parse(json);
+      } catch(ex){ console.log(ex); }
       xtend.extend(true, conf, plugin);
     }
   });
