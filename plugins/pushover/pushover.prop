@@ -1,0 +1,11 @@
+{
+  "modules" : { 
+    "pushover"  : {
+      "description": "Envoie des commandes Pushover",
+      "version"    : "1.0",
+      "token"      : "YOUR APP TOKEN",
+      "user"       : "USER KEY",
+      "title"      : "SARAH"
+    }
+  }
+}

@@ -1,0 +1,25 @@
+<% layout('layouts/layout') %>
+    
+    <%- partial('fragments/navbar') %>
+
+    <div id="container" class="container-fluid">
+      <div class="row-fluid">
+        <div class="span2" id="sidebar">
+          
+          <%- partial('fragments/sidenav') %>
+          
+        </div><!--/span-->
+        <div class="span10 page">
+          
+          <h3>Kinect</h3>
+          <img src='#' id="image" width="640" height="480" />
+          <% script('js/kinect.js') %>
+	        
+	        
+        </div><!--/span-->
+      </div><!--/row-->
+
+    </div><!--/.fluid-container-->
+    
+    <%- partial('fragments/footer') %>
+    

@@ -1,0 +1,27 @@
+<% var config = SARAH.ConfigManager.getConfig(); %>
+<div class="well sidebar-nav">
+	<ul class="nav nav-list">
+	  <li class="nav-header"><%= config.bot.name %></li>
+	  <li><a href="/home#about">A propos</a></li>
+    <li><a href="/home#agent">Agent</a></li>
+    <li><a href="/home#http">Serveur HTTP</a></li>
+    
+	  <li class="nav-header">Modules</li>
+	  <% if (config.modules) { %>
+	  <% Object.keys(config.modules).forEach(function(key){ %>
+	  <li><a href="/home#<%= key %>"><%= key %></a></li>
+	  <% })} %>
+	  
+	  <li class="nav-header">PhantomJS</li>
+    <% if (config.phantoms) { %>
+    <% Object.keys(config.phantoms).forEach(function(key){ %>
+      <li><a href="/home#<%= key %>"><%= key %></a></li>
+    <% })} %>
+    
+	  <li class="nav-header">CRON</li>
+	  <% if (config.cron) { %>
+	  <% Object.keys(config.cron).forEach(function(key){ %>
+    <li><a href="/home#<%= key %>"><%= key %></a></li>
+    <% })} %>
+	</ul>
+</div>

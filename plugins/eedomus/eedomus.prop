@@ -1,0 +1,12 @@
+{
+  "modules" : { 
+    "eedomus":     {
+      "description": "Pilote le boitier domotique Eedomus",
+      "version"    : "1.0",
+      "answers"    : "Je m'en occupe !|Voilà qui est fait !|C'est fait !|Voilà !|Tout de suite !",
+      "api_url"    : "http://api.eedomus.com/set?action=periph.value",
+      "api_user"   : "[FIXME]",
+      "api_secret" : "[FIXME]"
+    }
+  }
+}

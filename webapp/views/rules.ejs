@@ -1,0 +1,92 @@
+<% layout('layouts/layout') %>
+    
+    <%- partial('fragments/navbar') %>
+    
+    <% script('js/rules.js') %>
+
+
+    <%- partial('fragments/codearea') %>
+
+    
+    <div id="container" class="container-fluid">
+      <div class="row-fluid">
+        <div class="span2" id="sidebar"> 
+          
+          <%- partial('fragments/sidenav') %>
+          
+        </div><!--/span-->
+        <div class="span10">
+          <div class="hero-unit" id="headline">
+            <h1>Règles de modules</h1>
+	        </div>
+	        
+	        <div class="page ifttt">
+	          <h2>If This Then That</h2>
+	          <p>
+              S.A.R.A.H execute des scripts <img src="images/script_icon.png" alt="script" /> via des requêtes HTTP déclenchées par:
+              <ul>
+                <li>de la reconnaissance vocale <img src="images/speech_icon.png" alt="parole" /> définie en XML</li>
+                <li>de la reconnaissance gestuelle <img src="images/gesture_icon.png" alt="geste" /> définie en XML</li>
+                <li>de la reconnaissance de QRCode <img src="images/qrcode_icon.png" alt="qrcode" /> (l'URL est dans le code)</li>
+                <li>un évènement de calendrier <img src="images/calendar_icon.png" alt="calendrier" /> (l'URL est dans le where)</li>
+              </ul>
+            </p>
+	          <p>
+	            Par défaut, ces scripts <img src="images/script_icon.png" alt="script" /> doivent retourner une valeur <code>{ tts: 'text to speech' }</code> qui sera vocalisée <img src="images/speak_icon.png" alt="vocaliser" />. 
+	            La mécanique de règles permet de surcharger ce comportement en chaînant d'autres actions à la place de la vocalisation.  Les règles sont exécutée dans l'ordre présenté.
+	          </p>
+	          <form method="POST" action="/rules">
+	          <h3>Par défaut</h3>
+            <div class="row-fluid rule">
+              <div class="span1"><i>If</i></div>
+              <div class="span4 glyph"><img src="images/speech.png" alt="parole"/> <i>Speech</i></div>
+              <div class="span3"><i>then</i></div>
+              <div class="span4 glyph"><img src="images/script.png" alt="script" /> <i>Script</i></div> 
+            </div>
+            <div class="row-fluid rule">
+              <div class="span1"><i>If</i></div>
+              <div class="span4 glyph"><img src="images/gesture.png" alt="geste" /> <i>Gesture</i></div>
+              <div class="span3"><i>then</i></div>
+              <div class="span4 glyph"><img src="images/script.png" alt="script" /> <i>Script</i></div> 
+            </div>
+            <div class="row-fluid rule">
+              <div class="span1"><i>If</i></div>
+              <div class="span4 glyph"><img src="images/qrcode.png" alt="qrcode" /> <i>QRCode</i></div>
+              <div class="span3"><i>then</i></div>
+              <div class="span4 glyph"><img src="images/script.png" alt="script" /> <i>Script</i></div> 
+            </div>
+            <div class="row-fluid rule">
+              <div class="span1"><i>If</i></div>
+              <div class="span4 glyph"><img src="images/calendar.png" alt="calendrier" /> <i>Calendar</i></div>
+              <div class="span3"><i>then</i></div>
+              <div class="span4 glyph"><img src="images/script.png" alt="script" /> <i>Script</i></div> 
+            </div>
+            <div class="row-fluid rule">
+              <div class="span1"><i>If</i></div>
+              <div class="span4 glyph"><img src="images/calendar.png" alt="calendrier" /> <i>Calendar</i></div>
+              <div class="span3"><i>then</i></div>
+              <div class="span4 glyph"><img src="images/speak.png" alt="vocaliser" /> <i>Speak</i></div> 
+            </div>
+            
+            <h3>Modules</h3>
+            <% var rules = SARAH.ConfigManager.getConfig().rules; %>
+            <% if (!rules){ rules = [{ "if" : " ", "then" : " ", "script" : " " }]; } %>
+            <% for (var r in rules){ var rule = rules[r]; %>
+            <div class="row-fluid rule">
+              <div class="span1"><i>If</i></div>
+              <div class="span4"><%- partial('fragments/rules-select', { 'builtin' : false, 'widget': 'if', 'rule' : rule['if'] }) %></div>
+              <div class="span3"><i>then&nbsp;</i><i><a href="#" class="script">do</a></i><input type="hidden" name="script" value="<%= rule['script'] %>" /></div>
+              <div class="span4"><%- partial('fragments/rules-select', { 'builtin' : true, 'widget': 'then', 'rule' : rule['then'] }) %></div> 
+            </div>
+            <% } %>
+            <p style="margin-top: 20px;">
+              <input type="submit" class="btn btn-primary" value="Enregistrer" />
+              <a href="#" class="btn" id="addRule">Ajouter une règle</a>
+            </p> 
+            </form>
+          </div>
+        </div><!--/span-->
+      </div><!--/row-->
+
+    </div><!--/.fluid-container-->
+    <%- partial('fragments/footer') %>

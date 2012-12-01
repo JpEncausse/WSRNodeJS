@@ -1,0 +1,54 @@
+<div id="werewolf">
+  <link href="/assets/werewolf/werewolf.css" rel="stylesheet">
+
+  <p class="info"> 
+    Cette page permet d'imprimer les QRCodes pour le jeux des <a href="http://fr.wikipedia.org/wiki/Les_Loups-garous_de_Thiercelieux">Loups-garous de Thiercelieux</a>.
+    Vous pouvez aussi utiliser le <a href="http://zxing.appspot.com/generator">WebService de ZXing</a>.
+  </p>
+  
+  <% for(var j = 0 ; j < 3 ; j++){ %>
+  <div class='row-fluid'>
+    <% for(var i = 0 ; i < 3 ; i++){ %>
+    <div class='span4 card'>
+      <div class="cut">
+	      <div class="back"><img src="/assets/werewolf/images/back.jpg" /></div>
+	      <div class="front" style="position: relative;">
+	        <img class='breed'  src="/assets/werewolf/images/back.jpg" />
+	        <img class='qrcode' src=""/>
+	      </div>
+	      <form class="form-inline" action="http://127.0.0.1:8080/sarah/werewolf" >
+				  <input type="text" class="input-medium" name="player" placeholder="Joueur">
+				  <label class="checkbox"><input name="breed" value="werewolf" type="checkbox"> Loup-garou</label>
+				</form>
+		  </div>
+    </div>
+    <% } %>
+  </div>
+  <div class="split"><img class="cut" src="/assets/werewolf/images/cut.png"/><hr class="cut" /></div>
+  <% } %>
+</div>
+
+<script type="text/javascript" language="JavaScript">
+  /* <![CDATA[ */
+  
+  var chart = 'http://chart.apis.google.com/chart?cht=qr&chs=350x350&chld=L&choe=UTF-8&chl=';
+  
+  $(document).ready(function() {
+    $(document).on('keyup',  '#werewolf INPUT[name=player]', callback);
+    $(document).on('change', '#werewolf INPUT[name=breed]',  callback);
+  });
+  
+  var callback = function(event){
+    var $e = $(event.currentTarget);
+    var $form = $e.closest('FORM');
+    var url = $form.attr('action') + '?' + $form.serialize(); // + '&t='+(new Date().getTime())
+    url = encodeURIComponent(url);
+    $form.closest('.card').find('.qrcode').attr('src',chart+url);
+    
+    // Toggle back
+    var src = $form.find('INPUT[name=breed]').is(':checked') ? '/assets/werewolf/images/loup2.jpg' : '/assets/werewolf/images/villageois2.jpg'
+    $e.closest('.card').find('.breed').attr('src',src);
+  }
+  
+  /* ]]> */
+</script>

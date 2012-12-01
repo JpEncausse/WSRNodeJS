@@ -1,0 +1,10 @@
+{
+  "phantoms" : { 
+    "meteo"  : {
+      "description": "Recherche la météo en ligne",
+      "version"    : "1.0",
+      "zip": "versailles/78000",
+      "date": "3"
+    }
+  }
+}

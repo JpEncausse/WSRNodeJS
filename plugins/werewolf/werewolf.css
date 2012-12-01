@@ -1,0 +1,60 @@
+#werewolf .back {
+  display: none;
+}
+#werewolf .front {
+  position: relative;
+  margin-bottom: 10px;
+}
+#werewolf .qrcode {
+  position: absolute;
+  top: 0.5%; left: 0;
+  opacity: 0.9;
+}
+
+#werewolf FORM {
+  text-align: center;
+}
+
+#werewolf HR.cut,
+#werewolf IMG.cut {
+  display: none;
+}
+
+@media print {
+
+  #container #plugin-title { display: none; }
+  #werewolf P.info { display: none; }
+  #container  .span9 { width: 95%; padding-top: 18px; }
+  #sidebar    { display: none; }
+  .navbar     { display: none; }
+  FOOTER      { display: none; }
+  
+  #werewolf  DIV.split {
+    position: relative;
+  }
+  
+  #werewolf HR.cut {
+    display: block;
+	  border-top-style: dashed;
+	  border-top-color: #C5C5C5;
+  }
+  
+	#werewolf IMG.cut {
+	  display: inline;
+	  float: left;
+	  position: absolute;
+	  top: -9px;
+	  left: 10%;
+	}
+	
+	#werewolf .card:nth-child(2) DIV.cut {
+	  border-width: 0px 1px;
+	  border-style: dashed;
+	  border-color: #C5C5C5;
+	  margin:  0 -3.8%;
+	  padding: 0  3.8%;
+	}
+	
+	#werewolf  DIV.split:last-child  { display: none; }
+  
+}

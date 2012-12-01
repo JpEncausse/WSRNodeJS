@@ -1,0 +1,112 @@
+<% layout('layouts/layout') %>
+<% var config = SARAH.ConfigManager.getConfig();  %>    
+    <%- partial('fragments/navbar') %>
+
+    <div id="container" class="container-fluid">
+      <div class="row-fluid">
+        <div class="span2" id="sidebar">
+          
+          <%- partial('fragments/sidenav') %>
+          
+        </div><!--/span-->
+        <div class="span10">
+          <div class="hero-unit" id="headline">
+            <h1><%= config.bot.name %></h1>
+            <p id="test"><%= config.bot.tagline %></p>
+            <p>
+              <a href="http://www.encausse.net/s-a-r-a-h" class="btn btn-primary btn-large">En savoir plus &raquo;</a>
+              <!--  <a href="/restart" class="btn btn-danger btn-large">Redémarrer le serveur &raquo;</a>  -->
+            </p>
+			<div id="ticker" class="alert alert-info pull-right">
+			&nbsp;<%= SARAH.ConfigManager.getTicker() %>&nbsp;<i>&nbsp;&#8221;</i>
+			</div>
+          </div>
+          
+          <div class="page">
+	          <div class="row-fluid">
+	            <div class="span4">
+	              <a name="about" ></a>
+	              <h2>A propos</h2>
+	              <p>Ce projet est sous <a href="http://sam.zoy.org/wtfpl/">license WTFPL</a>.</p>
+	              <p>Et suis une méthodologie à <a href="http://www.risacher.com/la-rache/index.php?z=2">la rache</a></p>
+	              <p>Amusez-vous bien et <a href="https://groups.google.com/forum/#!forum/sarah_domotique">partagez avec la communauté</a> !</p>
+	              <p align="right">-- <a href="http://www.encausse.net">Jean-Philippe</a></p>
+	            </div><!--/span-->
+	            <div class="span4">
+	              <a name="agent" ></a>
+	              <h2>Agent</h2>
+	              <p>Un des objectifs de <%= config.bot.name %> est de devenir un <a href="http://en.wikipedia.org/wiki/Chatterbot">Chatter Bot</a> avec une forte interraction dans l'habitat.</p>
+	              <p>Cette section permet de personnaliser et paramétrer la configuration de l'agent: Nom, description, ...</p>
+	              <%- partial('fragments/modal', {'type' : '', 'key' : 'bot', 'module' : config.bot }) %>
+	            </div><!--/span-->
+	            <div class="span4">
+	              <a name="http" ></a>
+	              <h2>Serveur HTTP</h2>
+	              <p>Le coeur de l'agent est un serveur HTTP qui reçoit des requêtes liées à des commandes vocales mais aussi à d'autres stimulis.</p>
+	              <p>Cette section permet de paramétrer le serveur NodeJS.</p>
+	              <%- partial('fragments/modal', {'type' : '', 'key' : 'http', 'module' : config.http }) %>
+	            </div><!--/span-->
+	          </div><!--/row-->
+	        </div>
+	        
+	        <div class="page">
+            <h2>Modules</h2>
+            <p>
+              <%= config.bot.name %> est capable d'exécuter différentes tâches décrites par des scripts. 
+              Les requêtes HTTP envoyées à l'adresse <code>http://ip:port/sarah/script</code> entrainent l'execution du script du même nom situé dans le répertoire <code>/script</code>:
+            </p>
+<pre>
+/**
+ * @param data json object of the QueryString
+ * @param callback function to call with the text to speech
+ * @param config the application configuration
+ */
+exports.action = function(data, callback, config){
+  callback({'tts': text});
+}</pre>
+            <%- partial('fragments/module', {'type' : 'modules.',  'modules' : config.modules }) %>
+	        </div>
+	        
+	        <div class="page">
+            <h2>PhantomJS</h2>
+            <p><%= config.bot.name %> va chercher une partie de ses connaissances sur Internet. Pour ce faire elle pilote un navigateur web appelé PhantomJS</p>
+            <p>Les requêtes HTTP envoyées à l'adresse <code>http://ip:port/sarah/phantom/script</code> entrainent l'execution du script du même nom situé dans le répertoire <code>/script/phantom</code>.</p>
+<pre>
+  // Inject helper
+  phantom.injectJs("../lib/scraper.js");
+  
+  // Merge default options with querystring
+  var options = {'param' :'value'};
+  scraper.setOptions(options);
+  
+  // Scrap
+  scraper.scrap(url, options, function(options, results){
+    // Play with jQuery and set tts
+    results.tts = 'Text to speech';
+  });
+</pre>
+	          <%- partial('fragments/module', {'type' : 'phantoms.', 'modules' : config.phantoms }) %>
+	        </div>
+	        
+	        <div class="page">
+	          <h2>CRON</h2>
+	          <p><%= config.bot.name %> est capable d'executer des tâches périodiques. Ces tâches s'appelent des <a href="http://en.wikipedia.org/wiki/Cron">CRON</a>.</p>
+	          <p>Les CRON sont des scripts déclarés dans le répertoire <code>/script</code>. La syntaxe est très puissante mais un peu complexe.</p>
+	          <p>Le CRON calendar permet de vocaliser du texte à des moments précis. GoogleCalendar devient alors une timeline. Et couplé à des règles <a href="https://ifttt.com/google_calendar">Ifttt</a> ça devient un pont entre la maison et internet.</p>
+<pre>
+/**
+ * @param data json object of the QueryQtring
+ * @param callback function to call with the text to speech
+ * @param config the application configuration
+ */
+exports.cron = function(callback, task){
+  callback({"tts" : "Text to speech")});
+}</pre>
+	          <%- partial('fragments/module', {'type' : 'cron.', 'modules' : config.cron }) %>
+	        </div>
+	        
+        </div><!--/span-->
+      </div><!--/row-->
+
+    </div><!--/.fluid-container-->
+    <%- partial('fragments/footer') %>

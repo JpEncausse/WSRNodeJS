@@ -1,0 +1,13 @@
+{
+  "cron" : { 
+    "photoframe" : {
+      "name"       : "Photo Frame",
+      "description": "Construit un fichier RSS à partir d'une liste d'images dans un dossier DropBox",
+      "version"    : "1.0",
+      "time"       : "0 */5 * * * *",
+      "feed"       : "feed.rss",
+      "folder"     : "[FIXME]",
+      "url"        : "[FIXME]"
+    }
+  }
+}

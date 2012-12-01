@@ -1,0 +1,10 @@
+{
+  "modules" : { 
+    "rss"  : {
+      "description": "Manipulation d'un flux RSS pour IFTTT",
+      "version"    : "1.0",
+      "path" : "path/to/ifttt.rss",
+      "buffer" : "20"
+    }
+  }
+}

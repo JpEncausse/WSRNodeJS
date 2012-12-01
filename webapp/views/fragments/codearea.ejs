@@ -1,0 +1,22 @@
+
+<% script('codemirror/codemirror.js') %>
+<% script('codemirror/mode/javascript.js') %>
+<% stylesheet('codemirror/codemirror.css') %>
+
+<% script('js/codearea.js') %>
+
+<div class="modal hide fade" id="modalRules">
+  <div class="modal-header">
+    <h3>Script de la règle</h3>
+  </div>
+  <div class="modal-body">
+    <p>Ce code sera executé <strong>avant</strong> l'appel du 2ème scripts.  Attention ! Toutes les fonctions NodeJS sont disponibles.</p>
+    <p>L'objet <code>options</code> peut-être modifié afin de changer les paramètres passés au script suivant.</p>
+    <textarea id="codearea"></textarea>
+    <p class="quote"><em>With great power comes great responsibility. --Voltaire</em></p>
+  </div>
+  <div class="modal-footer">
+    <a href="#" data-dismiss="modal" class="btn">Fermer</a>
+    <a href="#" data-dismiss="modal" class="btn btn-primary">Enregistrer</a>
+  </div>
+</div>

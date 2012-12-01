@@ -1,0 +1,8 @@
+{
+  "modules" : { 
+    "werewolf"  : {
+      "description": "Le jeu des Loups-garous de Thiercelieux",
+      "version"    : "1.1"
+    }
+  }
+}

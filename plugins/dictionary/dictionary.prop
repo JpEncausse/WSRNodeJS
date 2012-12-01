@@ -1,0 +1,8 @@
+{
+  "phantoms" : { 
+    "dictionary"  : {
+      "description": "Recherche d'une définition sur Wikipedia",
+      "version"    : "1.0"
+    }
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "phantoms" : { 
+    "movie"  : {
+      "description": "Scraping de Allociné",
+      "version"    : "1.0"
+    }
+  }
+}

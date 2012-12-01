@@ -1,0 +1,12 @@
+<% var plugins = SARAH.PluginManager.getLocals(); %>
+<img src="images/script.png" class="glyph" alt="script" />
+<select class="script" name="<%= widget %>">
+  <option value="">Aucun</option>
+  <% if (builtin) { %>
+  <option value="speak" <%- 'speak' == rule ? 'selected="selected"' : '' %> data-icon="images/speak.png">Speak</option>
+  <% } %>
+  <% for (var p in plugins){ var plugin = plugins[p]; %>
+  <% var dataIcon = SARAH.PluginManager.hasIcon(plugin.name) ? 'data-icon="/assets/' + plugin.name + '/' + plugin.name + '.png"' : ''; %>
+  <option value="<%= plugin.name %>" <%- plugin.name == rule ? 'selected="selected"' : '' %> <%- dataIcon %>><%= plugin.name %></option>
+  <% } %>
+</select>

@@ -1,0 +1,37 @@
+<p>
+  <a class="btn" href="#" data-toggle="modal" data-target="#<%= key %>">Configurer &raquo;</a>
+  <% if (SARAH.PluginManager.hasWebPage(key)){ %>
+  <a class="btn" href="/plugins/<%= key %>">Module &raquo;</a>
+  <% } %>
+</p>
+<div class="modal hide fade" id="<%= key %>">
+  <form class="form-horizontal" method="POST" action="/config">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h3><%= key %></h3>
+  </div>
+  <div class="modal-body">
+    <% if (module.description){ %>
+    <p><%= module.description %></p>
+    <% } %>
+    
+	  <% Object.keys(module).forEach(function(attr){ %>
+	  <% var value = module[attr]; %>
+	  <% if (attr == 'description') return; %>
+	  <div class="control-group">
+	    <label class="control-label" for="#<%= key %>_<%= attr %>"><%= attr %></label>
+	    <div class="controls">
+	      <input type="text" id="<%= key %>_<%= attr %>" name="<%= attr %>" value="<%= value %>" placeholder="Saisir la valeur...">
+	    </div>
+	  </div>
+	  
+	  <% }); %>
+	  <input type='hidden' name='key' value='<%= type + key %>'/>
+  </div>
+  <div class="modal-footer">
+    <a href="#" class="btn" data-dismiss="modal">Fermer</a>
+    
+    <button type="submit" class="btn btn-primary">Enregistrer</a>
+  </div>
+  </form>
+</div> 
