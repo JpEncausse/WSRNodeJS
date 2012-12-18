@@ -1,0 +1,39 @@
+<div id="gesture">
+  
+  <div class="row-fluid">
+	  <div class="span8">
+		  <p>Le module Gesture ne fait que recevoir et décoder les commandes gestuelles envoyées par WSRMacro.</p>
+		  
+		  <p>
+		    Le paramètre <code>g</code> contient le type de gesture:
+			  <ul>
+			    <li><code>g=1</code> => Poignet gauche &gt; Epaule gauche</li>
+			    <li><code>g=2</code> => Poignet gauche &lt; Epaule gauche</li>
+			    <li><code>g=3</code> => Poignet droit &gt; Epaule droite</li>
+			    <li><code>g=4</code> => Poignet droit &lt; Epaule droite</li>
+			    <li><code>g=5</code> => Poignets &gt; Epaules</li>
+			    <li><code>g=6</code> => Poignets &lt; Epaules</li>
+          <li><code>g=7</code> => Swipe gauche</li>
+          <li><code>g=8</code> => Swipe droit</li>
+			  </ul>
+			  Il faut editer le fichier <code>gesture.gesture</code> pour ajouter d'autres mouvements. 
+		  </p>
+	  </div>
+	  <div class="span4"><img src="/assets/gesture/images/skeleton.png" align="right" /></div>
+  </div> 
+
+  <div class="row-fluid">
+    <h4>Règles</h4>
+    <p>
+      L'idée est d'utiliser le moteur de règles pour associer des gestes à des actions:
+      <ul>
+        <li>Déclencher des sons</li>
+        <li>Piloter (gauche/droit/avancer) un robot (Lego MindStorm)</li>
+        <li>Commander les slides d'un navigateurs (WebSocket)</li>
+        <li>...</li>
+      </ul>
+    </p>
+    <p><img src="/assets/gesture/images/screenshot.jpg" /></p>
+  </div>
+
+</div>

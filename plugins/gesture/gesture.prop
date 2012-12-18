@@ -1,0 +1,8 @@
+{
+  "modules" : { 
+    "gesture"  : {
+      "description": "Script framework de reception de gesture",
+      "version"    : "1.0"
+    }
+  }
+}

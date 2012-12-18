@@ -2,7 +2,7 @@
   "modules" : { 
     "karotz"  : {
       "description": "Envoie des commandes au karotz via l'application KarotzNet.exe",
-      "version"    : "1.0",
+      "version"    : "1.1",
       "ip"         : "192.168.0.[FIXME]"
     }
   }

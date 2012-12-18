@@ -175,6 +175,7 @@ var display = function(req, res, next){
   var rgxplugin = /\/plugins\/(\w+)\/*/g;
   var plugin = rgxplugin.exec(req.path);
   if (!plugin || plugin.length != 2){ res.send(404); return; }
+
   res.render('plugins', { 
     'plugins' : render,
     'plugin'  : plugin[1]

@@ -136,28 +136,52 @@ var CACHED_EVENTS = {};
 
 var matchEntry = function(entry, options){
   
+  
+  
+  var startDate, endDate, reminder;
+  if (!entry['gd$when']){
+    console.log('Skipping gd$recurrence');
+    return;
+  } 
+  else {
+    var when  = entry['gd$when'][0];
+    startDate = when.startTime;
+    endDate   = when.endTime;
+    reminder  = when['gd$reminder'] ? when['gd$reminder'][0] : 0;
+  }  
+  
   var title     = entry.title.$t;
-  var when      = entry['gd$when'][0];
   var url       = entry['gd$where'][0].valueString;
-  var startDate = when.startTime;
-  var endDate   = when.endTime;
-  var reminder  = when['gd$reminder'] ? when['gd$reminder'][0] : 0;
-  var uid       = entry['gCal$uid'].value;
+  var uid       = entry['gCal$uid'].value +"/"+ startDate;
   
   // Check cache
   if (options.cache && CACHED_EVENTS[uid]){ return false; }
   
   // .
-  var start    = moment(startDate);
+  var start    = moment(startDate); 
   var start_ms = start.valueOf();
   
+  
+ 
   // Check reminder
   if (options.reminder){
     var now_ms   = (new Date()).getTime();
-    var rmdr_ms  = reminder.minutes ? 1000*60*reminder.minutes : reminder.hours ? 1000*60*60*reminder.hours : 0;
-    if (start_ms - rmdr_ms > now_ms || now_ms > start_ms + 1000*60*5){ return false; }
+    var rmdr_ms  = reminder.minutes ? 1000*60*reminder.minutes : reminder.hours ? 1000*60*60*reminder.hours : 0; 
+    if (rmdr_ms == 30*60*1000){ rmdr_ms = 5*60*1000; } // Fix GCal Bug
+    
+    var before = (start_ms - rmdr_ms) - now_ms;
+    if (before > 0){ 
+      if (before < 1000*60*60*6) { console.log('[Event] '+ title +' in '+moment.duration(before).humanize()); } 
+      return false; 
+    }
+    
+    var after  = now_ms - (start_ms + 1000*60*5)
+    if (after > 0) { 
+      if (after < 1000*60*60*6) { console.log('[Event] '+ title +' exceed '+moment.duration(after).humanize()); }
+      return false; 
+    }
   }
-  
+ 
   // Check event after start date
   if (options.start){
     var end_ms = moment(endDate).valueOf();
@@ -178,6 +202,8 @@ var matchEntry = function(entry, options){
     title += ' ' + start.from(now);
   }
   
+  
+  
   if (options.time){
     title += ' à ' + start.format("HH:mm");
   }
@@ -188,14 +214,17 @@ var matchEntry = function(entry, options){
 /**
  * Check events at the given calendar URL 
  * then callback with array of events
- * 
+ * https://developers.google.com/google-apps/calendar/v2/reference
+ *  
  * @param url the calendar private url (full with json)
  * @param callback the function to call with event array
  * @param options a configuration object
  */
 var checkCalendar = function(url, callback, options){
-
+  
   var request = require('request');
+  var now = moment();
+  var url = url + '&singleevents=true' + '&start-min=' + now.subtract('days', 3).format('YYYY-MM-DD') + '&start-max=' + now.add('days', 6).format('YYYY-MM-DD');
   request({ 'uri' : url }, function (err, response, body){
     
     if (err || response.statusCode != 200) {
@@ -236,6 +265,7 @@ exports.cron = function(callback, task){
     events.forEach(function(event){
       // Send request for each URL 
       if (event.url){
+        console.log('[Event] trigger: ' + event.url);
         var request = require('request'); 
         request({ 'uri' : event.url }, function (err, response, body){
           if (err || response.statusCode != 200) { console.log('Cronlendar:',err); return; }

@@ -64,7 +64,7 @@
 exports.action = function(data, callback, config){
   callback({'tts': text});
 }</pre>
-            <%- partial('fragments/module', {'type' : 'modules.',  'modules' : config.modules }) %>
+            <%- partial('fragments/module', {'type' : 'modules',  'modules' : config.modules }) %>
 	        </div>
 	        
 	        <div class="page">
@@ -85,7 +85,7 @@ exports.action = function(data, callback, config){
     results.tts = 'Text to speech';
   });
 </pre>
-	          <%- partial('fragments/module', {'type' : 'phantoms.', 'modules' : config.phantoms }) %>
+	          <%- partial('fragments/module', {'type' : 'phantoms', 'modules' : config.phantoms }) %>
 	        </div>
 	        
 	        <div class="page">
@@ -102,7 +102,7 @@ exports.action = function(data, callback, config){
 exports.cron = function(callback, task){
   callback({"tts" : "Text to speech")});
 }</pre>
-	          <%- partial('fragments/module', {'type' : 'cron.', 'modules' : config.cron }) %>
+	          <%- partial('fragments/module', {'type' : 'cron', 'modules' : config.cron }) %>
 	        </div>
 	        
         </div><!--/span-->

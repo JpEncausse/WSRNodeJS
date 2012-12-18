@@ -140,6 +140,7 @@ var ConfigManager = {
   
   // Load all config
   'load': function(){
+    config = {};
     try       { 
       xtend.extend(true, config, loadProperties());
       xtend.extend(true, config, loadPlugins());

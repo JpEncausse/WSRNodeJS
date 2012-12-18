@@ -1,0 +1,8 @@
+{
+  "modules" : { 
+    "websocket"  : {
+      "description": "Script framework pour du WebSocket",
+      "version"    : "1.0"
+    }
+  }
+}

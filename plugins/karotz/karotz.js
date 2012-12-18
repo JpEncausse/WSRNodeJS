@@ -23,7 +23,7 @@ exports.action = function(data, callback, config){
 }
 
 var sendKarotz = function(config, args){
-  var process = '%CD%/bin/KarotzNet.exe -ip '+config.modules.karotz.ip+' '+args;
+  var process = '%CD%/plugins/karotz/bin/KarotzNet.exe -ip '+config.modules.karotz.ip+' '+args;
   console.log(process);
   var child = exec(process,
   function (error, stdout, stderr) {

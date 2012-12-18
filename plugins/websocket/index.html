@@ -1,0 +1,68 @@
+<div id="websocket">
+  <div class="row-fluid">
+    <div class="span8">
+    
+    <p>Le plugin WebSocket permet d'envoyer des commandes à un navigateur (Chrome) depuis NodeJS en WebSocket.</p> 
+    <p>
+      Cet exemple
+      <ul> 
+        <li>utilise une bookmarklet pour injecter jQuery et Socket.IO</li>
+        <li>demarrer un serveur websocket</li>
+        <li>simule les touches de clavier flèches gauche/droite</li>
+      </ul> 
+    </p>
+    <p>&nbsp;</p>
+    
+    <h4>1. Demarrer le serveur</h4>
+    <p>
+      La première étape consiste à démarrer le serveur WebSocket en accédant au scrit NodeJS:
+      <a href="http://127.0.0.1:8080/sarah/websocket">http://127.0.0.1:8080/sarah/websocket</a>
+    </p>
+    <p>&nbsp;</p>
+    
+    <h4>2. Bookmarklet</h4>
+    
+    <p>2.1 Ajouter (drag & drop) la bookmarklet dans vos favoris:
+    
+    <%
+      var cfg = SARAH.ConfigManager.getConfig();
+      var address = 'http://' + cfg.http.ip + ':' + cfg.http.port
+    %>
+    <a href="javascript:(function(d,t){ window.bkurl = '<%- address -%>'; var timestamp=new Date(); var g=d.createElement(t),s=d.getElementsByTagName(t)[0]; g.src='http://127.0.0.1:8080/assets/websocket/js/bookmarklet.js?v=' + timestamp.getTime(); s.parentNode.insertBefore(g,s)}(document,'script'));">My Bookmarklet</a>
+    </p>
+    <p>2.2 Puis aller sur un des sites suivants:</p>
+    <ul>
+      <li><a href="http://slides.html5rocks.com">HTML5 Rocks</a></li>
+      <li><a href="http://html5slides.googlecode.com/svn/trunk/template/index.html#1">HTML5 Slides</a></li>
+    </ul>
+     
+    <p>2.3 Enfin activer la bookmarklet</p>
+    <p>&nbsp;</p>
+     
+    <h4>3. Piloter le navigateur</h4>
+    
+    <p>Il suffit d'envoyer une requête HTTP avec le code de la touche à presser <code>?keydown=39</code>.</p>
+    
+    <h5>3.1 Web</h5>
+    <p>
+      Depuis une autre onglet accèder aux URLs:
+      <ul>
+        <li>Suivant: http://127.0.0.1:8080/sarah/websocket?keydown=39</li>
+        <li>Précédent: http://127.0.0.1:8080/sarah/websocket?keydown=37</li>
+      </ul>
+    </p>
+    
+    <p>&nbsp;</p> 
+     
+    <h5>3.1 Gesture</h5>
+    <p>Déclarer une règle: If Gesture Then WebSocket</p> 
+    <p><img src="/assets/websocket/images/screenshot2.jpg" /></p>
+    
+    <p>En fonction de la gesture envoyer le code clavier</p> 
+    <p><img src="/assets/websocket/images/screenshot1.jpg" /></p>
+    
+    <p>&nbsp;</p>
+    </div>
+    <div class="span4"></div>
+  </div> 
+</div>

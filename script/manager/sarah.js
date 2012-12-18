@@ -98,6 +98,7 @@ var render = function(path, options){
   var path = __dirname + '/../../' + path;
   if (!fs.existsSync(path)){ return "<h4>File not found: "+path+"</h4>"; }
   var text = fs.readFileSync(path, 'utf8');
+  var options = options || { 'SARAH' : SARAH };
   return ejs.render(text, options);
 };
 

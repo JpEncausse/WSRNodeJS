@@ -26,6 +26,8 @@ var routes   = require(__webapp + '/routes');
 
 // Build App
 var app = module.exports = express();
+var http = require('http');
+var server = http.createServer(app);
 
 // Set EJS Engine
 app.engine('ejs',  engine);
@@ -48,6 +50,12 @@ app.get('/',        routes.index);
 app.get('/home',    routes.home);
 app.get('/kinect',  routes.kinect);
 app.get('/about',   routes.about);
+
+// Link app
+SARAH.express = { 
+  'app' : app,
+  'server' : server
+};
 
 // ==========================================
 //  LOAD CONFIGURATION
@@ -73,7 +81,6 @@ app.get('/store',     SARAH.PluginManager.routes);
 
 app.get('/rules',     SARAH.RuleManager.routes);
 app.post('/rules',    SARAH.RuleManager.save);
-
 
 // ==========================================
 //  UPLOAD SCRIPT
@@ -101,6 +108,6 @@ SARAH.CRONManager.startAll();
 //  START SERVER
 // ==========================================
 
-var webapp = app.listen(SARAH.ConfigManager.getConfig().http.port);
+var webapp = server.listen(SARAH.ConfigManager.getConfig().http.port);
 console.log("Express server listening on port %d", webapp.address().port);
 
