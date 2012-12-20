@@ -53,7 +53,9 @@ var loadCustoms = function(){
   if (!fs.existsSync('script/custom.prop')) { return {}; }
   console.log('Loading custom properties...');
   var json = fs.readFileSync('script/custom.prop','utf8');
-  return JSON.parse(json);
+  var parse = {};
+  try { parse = JSON.parse(json); } catch (ex){ console.log(ex.message); }
+  return parse
 }
 
 // ------------------------------------------
@@ -65,7 +67,7 @@ var saveProperties = function(cfg) {
     config = cfg || config;
     var json = JSON.stringify(config);
 
-    json = json.replace(/\{/g,"{\n  ").replace(/\}/g,"\n  }").replace(/,/g,",\n  ");
+    //json = json.replace(/\{/g,"{\n  ").replace(/\}/g,"\n  }").replace(/,/g,",\n  ");
     fs.writeFileSync('script/custom.prop', json, 'utf8');
     console.log('Properties saved successfully');
   } catch(ex) {
