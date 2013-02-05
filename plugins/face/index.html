@@ -1,0 +1,32 @@
+<div id="gesture">
+  
+  <div class="row-fluid">
+	  <div class="span8">
+		  <p>Le module reconnaissance faciale pilote la reconnaissance faciale de WSRMacro</p>
+		  
+		  <h4>Ordre</h4>
+		  <p>
+			  Le module permet de déclencher la reconnaissance:
+			  <ul>
+			    <li>Sarah démarre la reconnaissance faciale</li>
+			    <li>Sarah arrête la reconnaissance faciale</li>
+			  </ul>
+			  Appel les fonctions NodeJS <code>SARAH.face(...)</code>
+		  </p>
+		  
+		  <h4>Entrainement</h4>
+		  <p>
+		    Si l'interface utilisateur est activée, il est possible de déclencher l'entrainement en disant:
+		    <ul>
+          <li>Sarah entraine la reconnaissance faciale</li>
+        </ul>
+        Appel la fonction NodeJS <code>SARAH.face('train')</code>
+		  </p>
+		  
+		  <h4>Reconnaissance</h4>
+		  <p>Quand un ou plusieurs visages sont reconnus, une requête à NodeJS est envoyé avec l'<code>id</code> du visage.</p> 
+		  <p>Il y a une limite toutes les 5s pour ne pas surcharger le serveur</p>
+	  </div>
+	  <div class="span4"></div>
+  </div>
+</div>

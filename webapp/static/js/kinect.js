@@ -10,7 +10,7 @@
     
     // Initialize a new web socket.
     console.log('Connecting to server...');
-    var socket = new WebSocket("ws://192.168.0.109:7777");
+    var socket = new WebSocket("ws://127.0.0.1:7777");
   
   
     // Connection established.

@@ -51,7 +51,7 @@
                 <td><%- plugin.author.indexOf('@') == 0 ? "<a href='http://twitter.com/"+plugin.author.substring(1)+"'>"+plugin.author+"</a>" : plugin.author %></td>
                 <td><%= plugin.tags %></td>
                 <td><%= plugin.description %></td>
-                <td>
+                <td> 
                 <% if (plugin.installed){ %>
                   <a href="/store?delete=<%= plugin.name %>" class="btn btn-danger confirm" title="Confirmer la suppression du plugin : '<%= plugin.name %>' ?">Supprimer...</a>
                 <% } else if (plugin.remote){ %>

@@ -17,7 +17,6 @@ exports.action = function(req, res, config){
     path   = req.files.file.path;
   }
   
-  
   console.log('Upload ' + path + ' to ' + upload+name);
     
   var fs   = require('fs');

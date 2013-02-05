@@ -1,0 +1,8 @@
+{
+  "modules" : { 
+    "face"  : {
+      "description": "Réception de la reconnaissance faciale",
+      "version"    : "1.0"
+    }
+  }
+}

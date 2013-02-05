@@ -49,7 +49,7 @@ var dispatch = function(cmd, options, res){
 
 var callback = function (err, response, body){
   if (err || response.statusCode != 200) {
-    console.log("Error: ", err);
+    console.log("HTTP Error: ", err, response, body);
     return;
   }
 };
@@ -57,6 +57,7 @@ var callback = function (err, response, body){
 var remote = function(qs){
   var url = SARAH.ConfigManager.getConfig().http.remote;
   var request = require('request');
+  console.log('Remote: ', url, qs);
   request({ 'uri' : url, 'qs'  : qs }, callback);
 };
 
@@ -87,6 +88,12 @@ var script = function(uri){
   var url = 'http://127.0.0.1:' + SARAH.ConfigManager.getConfig().http.port + uri;
   request({ 'uri' : url }, callback);
 }
+
+var face = function(action) {
+  if (!action){ return;}
+  console.log("Face Recognition: " + action);
+  remote({ 'face' : action });
+};
 
 // ------------------------------------------
 //  RENDER WEBPAGE
@@ -133,6 +140,9 @@ var SARAH = {
   
   // Send pause command on remote
   'pause': pause,
+  
+  // Send face recognition command
+  'face': face,
   
   // General purpose remote action on WSRMacro
   'remote': remote,
