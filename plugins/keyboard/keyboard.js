@@ -1,19 +1,22 @@
 var exec = require('child_process').exec;
 
-exports.action = function(data, callback, config){
-  console.log('sendInput:', data);
+exports.action = function(data, callback, config, SARAH){
   
   // Callback with TTS
   callback({});
   
-  // Send Input
-       if (data.text)     { sendInput('text', data.text,  data.app, data.mod); } 
-  else if (data.press)    { sendInput('press',data.press, data.app, data.mod); }
-  else if (data.down)     { sendInput('down', data.down,  data.app, data.mod); }
-  else if (data.up)       { sendInput('up',   data.up,    data.app, data.mod); }
+  // Run or Activate App
+  if (data.run)      { SARAH.runApp(data.run); }
+  if (data.activate) { SARAH.activate(data.activate); }
   
+  // Send Input
+       if (data.text)     { SARAH.keyText(data.text); } 
+  else if (data.press)    { SARAH.keyPress(data.press, data.mod); }
+  else if (data.down)     { SARAH.keyDown(data.down, data.mod); }
+  else if (data.up)       { SARAH.keyUp(data.up, data.mod); }
 }
 
+// Call process local to NodeJS
 var sendInput = function(param, value, app, mod){
   var process = '%CD%/plugins/keyboard/bin/Keyboard.exe';
   

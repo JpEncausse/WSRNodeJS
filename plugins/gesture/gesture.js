@@ -1,12 +1,24 @@
-exports.action = function(data, callback, config){
+exports.action = function(data, callback, config, SARAH){
+  
+  // Store current user
+  if (data.g){
+    console.log('Gesture detection: ' + data.g);
+    SARAH.context = SARAH.context || {};
+    
+    // Callback
+    return callback({});
+  }
 
-  // Retrieve config
-  config = config.modules.gesture;
-  if (!config){
-    console.log("Missing Gesture config");
-    callback({});
-    return;
+  // Handle action
+  if (!data.reco){
+    return callback({});
   }
   
-  callback({});
+  if (data.reco == 'start'){
+    SARAH.gesture('start'); 
+    callback({'tts' : 'Démarrage de la reconaissance gestuelle'});
+  } else if (data.reco == 'stop'){
+    SARAH.gesture('stop');
+    callback({'tts' : 'Arrêt de la reconaissance gestuelle'})
+  }
 }

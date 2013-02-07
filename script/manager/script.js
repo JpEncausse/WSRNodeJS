@@ -26,16 +26,17 @@ var run = function(cmd, rQs, res){
   var callback = function(opts){
     var options = xtend.extend(true, rQs, opts);
     SARAH.dispatch(cmd, options, res);
+    
   }
   
   // Call script
   try {
     var module = SARAH.ConfigManager.getModule(cmd);
     module.action(rQs, callback, SARAH.ConfigManager.getConfig(), SARAH);
-  } 
-  catch(e){ 
-    console.log(e);
-    callback('Je ne comprends pas');  
+  }
+  catch(ex){ 
+    console.log(ex);
+    SARAH.dispatch({ tts : 'Je ne comprends pas'}, res); 
   }
 }
 

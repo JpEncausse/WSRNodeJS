@@ -4,7 +4,7 @@ exports.action = function(data, callback, config, SARAH){
   if (data.id){
     console.log('Face detection: ' + data.id);
     SARAH.context = SARAH.context || {};
-    SARAH.context.speak = data.id;
+    SARAH.context.speaker = data.id;
     
     // Callback
     return callback({});

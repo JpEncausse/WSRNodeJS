@@ -61,6 +61,14 @@ var remote = function(qs){
   request({ 'uri' : url, 'qs'  : qs }, callback);
 };
 
+var _key = function(key, action, mod) {
+  if (!key){ return;}
+  console.log("Key:", action, key, mod);
+  var param = { 'keyMod' : mod };
+  param[action] = key;
+  remote(param);
+};
+
 // ------------------------------------------
 //  FEATURES
 // ------------------------------------------
@@ -94,6 +102,30 @@ var face = function(action) {
   console.log("Face Recognition: " + action);
   remote({ 'face' : action });
 };
+
+var gesture = function(action) {
+  if (!action){ return;}
+  console.log("Gesture Recognition: " + action);
+  remote({ 'gesture' : action });
+};
+
+var keyText = function(text) {
+  if (!keyText){ return;}
+  console.log("KeyText:", keyText);
+  remote({ 'keyText' : keyText });
+};
+
+var runApp = function(app) {
+  if (!app){ return;}
+  console.log("Run:", app);
+  remote({ 'run' : app });
+}
+
+var activate = function(app) {
+  if (!app){ return;}
+  console.log("Activate:", app);
+  remote({ 'activate' : app });
+}
 
 // ------------------------------------------
 //  RENDER WEBPAGE
@@ -143,6 +175,17 @@ var SARAH = {
   
   // Send face recognition command
   'face': face,
+  
+  // Send gesture recognition command
+  'gesture': gesture,
+  
+  // Keyboard remote commands
+  'runApp'  : runApp,
+  'activate': activate,
+  'keyPress': function(key, mod) { _key(key, 'keyPress', mod) },
+  'keyDown' : function(key, mod) { _key(key, 'keyDown', mod) },
+  'keyUp'   : function(key, mod) { _key(key, 'keyUp', mod) },
+  'keyText' : keyText,
   
   // General purpose remote action on WSRMacro
   'remote': remote,
