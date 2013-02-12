@@ -35,8 +35,8 @@ var run = function(cmd, rQs, res){
     module.action(rQs, callback, SARAH.ConfigManager.getConfig(), SARAH);
   }
   catch(ex){ 
-    console.log(ex);
-    SARAH.dispatch({ tts : 'Je ne comprends pas'}, res); 
+    console.log('Run: ',ex);
+    if (res){ res.end(); }
   }
 }
 

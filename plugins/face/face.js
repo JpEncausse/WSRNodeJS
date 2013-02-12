@@ -23,4 +23,6 @@ exports.action = function(data, callback, config, SARAH){
       callback({'tts' : 'Capture de la reconaissance faciale'})
     }
   }
+  
+  callback({});
 }

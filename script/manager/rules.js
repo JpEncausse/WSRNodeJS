@@ -47,11 +47,13 @@ var dispatch = function(cmd, options){
   if (!rules){ return false; }
   
   for (var i = 0 ; i < rules.length ; i++){
-    var rule = rules[i];
-    if (rule['if'] != cmd){ continue; } hasRule = true;
-    if (rule['script']){ eval(rule['script']); }
-    if (rule['then'] == 'speak'){ speak = true; continue; }
-    SARAH.run(rule['then'], options);
+    try {
+      var rule = rules[i];
+      if (rule['if'] != cmd){ continue; } hasRule = true;
+      if (rule['script']){ eval(rule['script']); }
+      if (rule['then'] == 'speak'){ speak = true; continue; }
+      SARAH.run(rule['then'], options);
+    } catch(ex) { console.log('Rule: ',ex); }
   }
   
   return hasRule && !speak;
