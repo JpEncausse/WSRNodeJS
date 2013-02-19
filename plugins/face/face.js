@@ -14,13 +14,13 @@ exports.action = function(data, callback, config, SARAH){
   if (data.reco){
     if (data.reco == 'start'){
       SARAH.face('start'); 
-      callback({'tts' : 'Démarrage de la reconaissance faciale'});
+      return callback({'tts' : 'Démarrage de la reconaissance faciale'});
     } else if (data.reco == 'stop'){
       SARAH.face('stop');
-      callback({'tts' : 'Arrêt de la reconaissance faciale'})
+      return callback({'tts' : 'Arrêt de la reconaissance faciale'})
     } else if (data.reco == 'train'){
       SARAH.face('train');
-      callback({'tts' : 'Capture de la reconaissance faciale'})
+      return callback({'tts' : 'Capture de la reconaissance faciale'})
     }
   }
   
