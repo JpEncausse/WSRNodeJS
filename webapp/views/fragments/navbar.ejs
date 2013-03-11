@@ -9,14 +9,16 @@
       <a class="brand" href="#"><%= SARAH.ConfigManager.getConfig().bot.name %></a>
       <div class="nav-collapse collapse">
         <ul class="nav pull-right">
-          <li <%= nav == 'about'  ? "class='active'" : "" %>><a href="/about">A propos</a></li>
+          <li><a href="http://encausse.net/s-a-r-a-h/s-a-r-a-h-foire-aux-questions/">F.A.Q.</a></li>
+          <li><a href="http://plus.google.com/u/0/communities/105964514508504667709">Communauté</a></li>
           <li><a href="http://encausse.net/s-a-r-a-h/" class="navbar-link">Encausse.net</a></li>
         </ul>
         <ul class="nav">
           <li <%= nav == 'home'  ? "class='active'" : "" %>><a href="/home">Accueil</a></li>
           <li <%= nav == 'store' ? "class='active'" : "" %>><a href="/store" id="storeMenu">Store</a></li>
           <li <%= nav == 'rules' ? "class='active'" : "" %>><a href="/rules" id="rulesMenu">Règles</a></li>
-          <li><a href="https://groups.google.com/forum/#!forum/sarah_domotique">Communauté</a></li>
+          <li <%= nav == 'kinect'? "class='active'" : "" %>><a href="/kinect">WebSocket</a></li>
+          <li <%= nav == 'about' ? "class='active'" : "" %>><a href="/about">A propos</a></li>
         </ul>
       </div><!--/.nav-collapse -->
     </div>

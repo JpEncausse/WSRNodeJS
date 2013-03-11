@@ -18,7 +18,7 @@ var scraper = {
   setOptions: function(options){
     var system  = require('system');
     if (system.args.length > 1){
-    
+
       // Parse JSON
       var json = system.args[1];
       var params = json ? JSON.parse(json) : {};

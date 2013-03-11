@@ -39,44 +39,46 @@
 	          <h3>Par défaut</h3>
             <div class="row-fluid rule">
               <div class="span1"><i>If</i></div>
-              <div class="span4 glyph"><img src="images/speech.png" alt="parole"/> <i>Speech</i></div>
-              <div class="span3"><i>then</i></div>
-              <div class="span4 glyph"><img src="images/script.png" alt="script" /> <i>Script</i></div> 
+              <div class="span3 glyph"><img src="images/speech.png" alt="parole"/> <i>Speech</i></div>
+              <div class="span2"><i>then</i></div>
+              <div class="span3 glyph"><img src="images/script.png" alt="script" /> <i>Script</i></div> 
             </div>
             <div class="row-fluid rule">
               <div class="span1"><i>If</i></div>
-              <div class="span4 glyph"><img src="images/gesture.png" alt="geste" /> <i>Gesture</i></div>
-              <div class="span3"><i>then</i></div>
-              <div class="span4 glyph"><img src="images/script.png" alt="script" /> <i>Script</i></div> 
+              <div class="span3 glyph"><img src="images/gesture.png" alt="geste" /> <i>Gesture</i></div>
+              <div class="span2"><i>then</i></div>
+              <div class="span3 glyph"><img src="images/script.png" alt="script" /> <i>Script</i></div> 
             </div>
             <div class="row-fluid rule">
               <div class="span1"><i>If</i></div>
-              <div class="span4 glyph"><img src="images/qrcode.png" alt="qrcode" /> <i>QRCode</i></div>
-              <div class="span3"><i>then</i></div>
-              <div class="span4 glyph"><img src="images/script.png" alt="script" /> <i>Script</i></div> 
+              <div class="span3 glyph"><img src="images/qrcode.png" alt="qrcode" /> <i>QRCode</i></div>
+              <div class="span2"><i>then</i></div>
+              <div class="span3 glyph"><img src="images/script.png" alt="script" /> <i>Script</i></div> 
             </div>
             <div class="row-fluid rule">
               <div class="span1"><i>If</i></div>
-              <div class="span4 glyph"><img src="images/calendar.png" alt="calendrier" /> <i>Calendar</i></div>
-              <div class="span3"><i>then</i></div>
-              <div class="span4 glyph"><img src="images/script.png" alt="script" /> <i>Script</i></div> 
+              <div class="span3 glyph"><img src="images/calendar.png" alt="calendrier" /> <i>Calendar</i></div>
+              <div class="span2"><i>then</i></div>
+              <div class="span3 glyph"><img src="images/script.png" alt="script" /> <i>Script</i></div> 
             </div>
             <div class="row-fluid rule">
               <div class="span1"><i>If</i></div>
-              <div class="span4 glyph"><img src="images/calendar.png" alt="calendrier" /> <i>Calendar</i></div>
-              <div class="span3"><i>then</i></div>
-              <div class="span4 glyph"><img src="images/speak.png" alt="vocaliser" /> <i>Speak</i></div> 
+              <div class="span3 glyph"><img src="images/calendar.png" alt="calendrier" /> <i>Calendar</i></div>
+              <div class="span2"><i>then</i></div>
+              <div class="span3 glyph"><img src="images/speak.png" alt="vocaliser" /> <i>Speak</i></div> 
             </div>
             
             <h3>Modules</h3>
             <% var rules = SARAH.ConfigManager.getConfig().rules; %>
             <% if (!rules){ rules = [{ "if" : " ", "then" : " ", "script" : " " }]; } %>
             <% for (var r in rules){ var rule = rules[r]; %>
+            <% var disabled = rule['disabled'] == 'true'; %>
             <div class="row-fluid rule">
               <div class="span1"><i>If</i></div>
-              <div class="span4"><%- partial('fragments/rules-select', { 'builtin' : false, 'widget': 'if', 'rule' : rule['if'] }) %></div>
-              <div class="span3"><i>then&nbsp;</i><i><a href="#" class="script">do</a></i><input type="hidden" name="script" value="<%= rule['script'] %>" /></div>
-              <div class="span4"><%- partial('fragments/rules-select', { 'builtin' : true, 'widget': 'then', 'rule' : rule['then'] }) %></div> 
+              <div class="span3"><%- partial('fragments/rules-select', { 'builtin' : false, 'widget': 'if', 'rule' : rule['if'] }) %></div>
+              <div class="span2"><i>then&nbsp;</i><i><a href="#" class="script">do</a></i><input type="hidden" name="script" value="<%= rule['script'] %>" /></div>
+              <div class="span3"><%- partial('fragments/rules-select', { 'builtin' : true, 'widget': 'then', 'rule' : rule['then'] }) %></div> 
+              <div class="span2"><div class="switch" style="margin-top: 4px;"><input class="swtch" type="checkbox" value="true" <%- disabled ? '' : 'checked="checked"' %>/><input type="hidden" name="disabled" value="<%= disabled %>"/></div></div>
             </div>
             <% } %>
             <p style="margin-top: 20px;">

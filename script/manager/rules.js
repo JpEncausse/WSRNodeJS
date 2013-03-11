@@ -7,16 +7,18 @@ var routes = function(req, res, next){
 };
 
 var saveRules = function(req, res, next){
-  var _if     = req.param('if');
-  var _then   = req.param('then');
-  var _script = req.param('script');
+  var _if       = req.param('if');
+  var _then     = req.param('then');
+  var _script   = req.param('script');
+  var _disabled = req.param('disabled');
   
-  _if     = (typeof _if     === 'string') ? [_if]     : _if;
-  _then   = (typeof _then   === 'string') ? [_then]   : _then;
-  _script = (typeof _script === 'string') ? [_script] : _script;
+  _if       = (typeof _if       === 'string') ? [_if]       : _if;
+  _then     = (typeof _then     === 'string') ? [_then]     : _then;
+  _script   = (typeof _script   === 'string') ? [_script]   : _script;
+  _disabled = (typeof _disabled === 'string') ? [_disabled] : _disabled;
   
   if (_if.length != _then.length ||  _then.length != _script.length){
-    console.log('Wrong IFTTT parameters', _if, _then, _script);
+    console.log('Wrong IFTTT parameters', _if, _then, _script, _disabled);
     res.redirect('/rules');
     return;
   }
@@ -24,7 +26,7 @@ var saveRules = function(req, res, next){
   var rules = [];
   for (var i = 0; i < _if.length ; i++){
     rules.push({
-      'if': _if[i],  'then': _then[i], 'script': _script[i],
+      'if': _if[i],  'then': _then[i], 'script': _script[i], 'disabled': _disabled[i]
     });
   }
   SARAH.ConfigManager.getConfig().rules = rules;
@@ -49,6 +51,7 @@ var dispatch = function(cmd, options){
   for (var i = 0 ; i < rules.length ; i++){
     try {
       var rule = rules[i];
+      if (rule['disabled'] == 'true'){ continue; }
       if (rule['if'] != cmd){ continue; } hasRule = true;
       if (rule['script']){ eval(rule['script']); }
       if (rule['then'] == 'speak'){ speak = true; continue; }

@@ -1,0 +1,79 @@
+/* ------------------------------------------ */
+/*  KINECT                                    */
+/* ------------------------------------------ */
+
+.page   { opacity: 1; }
+.navbar { position: absolute; }
+
+.kinect {
+  position: absolute;
+  width:  320px;
+  height: 240px;
+  -webkit-filter: contrast(130%);
+}
+
+/* ------------------------------------------ */
+/*  GREEN SCREEN                              */
+/* ------------------------------------------ */
+
+#background {
+  position: relative;
+  margin-bottom: 20px;
+  width:  720px;
+  height: 305px;
+}
+
+#image-bg {
+  background: #FFF url('../images/kinect/virtual4.gif') no-repeat;
+  width:  720px;
+  height: 305px;
+}
+
+#image {
+  bottom:   0px;
+  right:    0px;
+  -webkit-filter: opacity(0.9) sepia(0.6) hue-rotate(-20deg) contrast(100%) brightness(10%);
+}
+
+/*
+#image-fg {
+  position: absolute;
+  bottom: 0px;
+  left:   0px;
+  
+  background: #FFF url('../images/kinect/virtual3.gif') no-repeat;
+  background-position: bottom;
+  width:  615px;
+  height: 30px;
+}*/
+
+/* ------------------------------------------ */
+/*  HOLOGRAM                                  */
+/* ------------------------------------------ */
+
+#hologram {
+  background: black;
+  position: relative;
+  margin-bottom: 20px;
+  width:  1027px;
+  height: 768px;
+}
+
+#holo1 { top:    40px; left:  125px; -webkit-transform: rotate(-45deg);  }
+#holo2 { top:    40px; right: 125px; -webkit-transform: rotate( 45deg);  }
+#holo3 { bottom: 40px; left:  125px; -webkit-transform: rotate(-135deg); }
+#holo4 { bottom: 40px; right: 125px; -webkit-transform: rotate(135deg); }
+#holoC { 
+  position: absolute;
+  top: 50%; left: 50%;
+   
+  width:  60px; margin-left: -30px; 
+  height: 60px; margin-top:  -30px;
+  
+  color: white; text-align: center;
+  border: 1px solid white;
+  -webkit-transform: rotate(45deg);
+}
+
+
+

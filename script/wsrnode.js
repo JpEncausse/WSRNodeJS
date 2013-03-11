@@ -50,6 +50,7 @@ app.get('/',        routes.index);
 app.get('/home',    routes.home);
 app.get('/kinect',  routes.kinect);
 app.get('/about',   routes.about);
+app.get('/badge',   routes.badge);
 
 // Link app
 SARAH.express = { 

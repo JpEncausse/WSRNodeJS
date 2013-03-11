@@ -36,9 +36,16 @@ var installPlugin = function(name, cb){
   if (!fs.existsSync('./tmp')){ fs.mkdirSync('./tmp'); }
   if (fs.existsSync('./tmp/'+name+'.zip')){ fs.unlinkSync('./tmp/'+name+'.zip'); }
 
-  console.log('Download plugin: ' + name);
+  var path = 'https://dl.dropbox.com/u/255810/Encausse.net/Sarah/plugins/'+name+'.zip';
+  var plugin = PluginManager.remote[name];
+  if (plugin && plugin.dl){ path = plugin.dl; }
+  
+  console.log('Download plugin: ', name, path);
   var request = require('request');
-  request('https://dl.dropbox.com/u/255810/Encausse.net/Sarah/plugins/'+name+'.zip', function (error, response, body) {
+  request({
+      'uri': path,
+      'headers': {'user-agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 (KHTML, like Gecko) Chrome/21.0.1180.75 Safari/537.1'}
+    }, function (error, response, body) {
     
     console.log('Unzip plugin: ' + name);
     fs.mkdirSync('plugins/'+name);

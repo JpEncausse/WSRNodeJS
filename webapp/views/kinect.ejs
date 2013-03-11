@@ -1,20 +1,36 @@
 <% layout('layouts/layout') %>
-    
     <%- partial('fragments/navbar') %>
-
     <div id="container" class="container-fluid">
       <div class="row-fluid">
-        <div class="span2" id="sidebar">
-          
+        <div class="span2">
           <%- partial('fragments/sidenav') %>
-          
-        </div><!--/span-->
+        </div>
         <div class="span10 page">
           
           <h3>Kinect</h3>
-          <img src='#' id="image" width="640" height="480" />
+          
+          <form action="" method="GET" class="form-inline">
+	          <input type="text"   value="127.0.0.1:7777" id="address"/>
+	          <input type="button" value="Connect" class="btn btn-primary" onclick="jQuery.sarah.websocket.register()"/>
+	          <div id="logs"></div>
+          </form>
+          
+          <div id="background">
+            <img id="image-bg" src='images/s.gif' />
+            <img id="image"    src='images/s.gif' class="kinect" />
+            <img id="image-fg" src='images/s.gif' />
+          </div>
+ 
+          <div id="hologram">
+            <img id="holo1"    src='images/s.gif' class="kinect" />
+            <img id="holo2"    src='images/s.gif' class="kinect" />
+            <div id="holoC">CENTER</div>
+            <img id="holo3"    src='images/s.gif' class="kinect" />
+            <img id="holo4"    src='images/s.gif' class="kinect" />
+          </div>
+           
           <% script('js/kinect.js') %>
-	        
+          <% stylesheet('css/kinect.css') %>
 	        
         </div><!--/span-->
       </div><!--/row-->

@@ -1,0 +1,12 @@
+{
+  "modules" : { 
+    "fitbit":     {
+      "description"        : "Wrapper API Fitbit",
+      "version"            : "1.0",
+      "api_key"            : "83c2e2be5b9742aa8612230affa943a7",
+      "api_secret"         : "44b90579cadf4ff29384a3d0faf9e666",
+      "oauth_token"        : "",
+      "oauth_token_secret" : ""
+    }
+  }
+}

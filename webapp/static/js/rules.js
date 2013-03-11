@@ -10,6 +10,10 @@
     });
     
     $(document).on('click', 'A#addRule', addRule);
+    
+    $('.switch').on('switch-change', function (event) {
+      $(this).find('INPUT[type="hidden"]').val(!$(this).find('.swtch').prop('checked'));
+    })
   }
   
   var setIcon = function(elm){

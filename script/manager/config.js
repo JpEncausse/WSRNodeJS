@@ -1,5 +1,46 @@
 var fs = require('fs');
 var xtend = require('../lib/extend.js');
+// ------------------------------------------
+//  REQUIRE - HELPER
+// ------------------------------------------
+
+/**
+ * Removes a module from the cache
+ */
+require.uncache = function (moduleName) {
+  // Run over the cache looking for the files
+  // loaded by the specified module name
+  require.searchCache(moduleName, function (mod) {
+    delete require.cache[mod.id];
+  });
+};
+
+/**
+ * Runs over the cache to search for all the cached
+ * files
+ */
+require.searchCache = function (moduleName, callback) {
+  // Resolve the module identified by the specified name
+  var mod = require.resolve(moduleName);
+
+  // Check if the module has been resolved and found within
+  // the cache
+  if (mod && ((mod = require.cache[mod]) !== undefined)) {
+    // Recursively go over the results
+    (function run(mod) {
+      // Go over each of the module's children and
+      // run over it
+      mod.children.forEach(function (child) {
+          run(child);
+      });
+
+      // Call the specified callback providing the
+      // found module
+      callback(mod);
+    })(mod);
+  }
+};
+
 
 // ------------------------------------------
 //  LOAD  PLUGIN
@@ -104,9 +145,17 @@ var routes = function(req, res, next){
 
 var getModule = function(name){
   var module = false;
-  try { module = require('../../plugins/'+name+'/'+name+'.js'); } 
+  try {
+    var path = '../../plugins/'+name+'/'+name+'.js';
+    if (config.debug){ require.uncache(path); }
+    module = require(path); 
+  } 
   catch (ex) { 
-    try { module = require('../'+name+'.js'); } catch (ex) { }
+    try { 
+      var path = '../'+name+'.js';
+      if (config.debug){ require.uncache(path); } 
+      module = require(path); 
+    } catch (ex) { }
   }
   return module;
 }
@@ -130,7 +179,7 @@ var getTicker = function(){
 //  PUBLIC
 // ------------------------------------------
 
-var config = {};
+var config;
 var SARAH = false;
 var ConfigManager = {
   
@@ -142,7 +191,7 @@ var ConfigManager = {
   
   // Load all config
   'load': function(){
-    config = {};
+    config = { 'debug' : false };
     try       { 
       xtend.extend(true, config, loadProperties());
       xtend.extend(true, config, loadPlugins());

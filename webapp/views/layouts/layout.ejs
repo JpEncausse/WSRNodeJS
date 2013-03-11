@@ -1,14 +1,24 @@
-
+<% var config = SARAH.ConfigManager.getConfig();  %> 
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <base href="/">
     <meta charset="utf-8">
-    <title><%= SARAH.ConfigManager.getConfig().bot.name %></title>
+    <title><%= config.bot.name %></title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
-
+    
+    <!-- http://blogs.msdn.com/b/ie/archive/2012/04/03/pinned-sites-in-windows-8.aspx -->
+    <meta name="application-name"              content="<%= config.bot.name %>" />
+    <meta name="msapplication-tooltip"         content="<%= config.bot.name %>" />
+    <meta name="msapplication-window"          content="width=1024;height=768" />
+    <meta name="msapplication-starturl"        content="/" />
+    <meta name="msapplication-navbutton-color" content="#D6D0CC" />
+    <meta name="msapplication-TileColor"       content="#D6D0CC"/> 
+    <meta name="msapplication-TileImage"       content="/images/ms-tile-white.png"/>
+    <meta name="msapplication-badge" value="frequency=30;polling-uri=http://127.0.0.1:8080/badge" />
+    
     <!-- Le styles -->
     <link href="bootstrap/css/bootstrap.css" rel="stylesheet">
     <style type="text/css">
@@ -21,6 +31,7 @@
       }
     </style>
     <link href="bootstrap/css/bootstrap-responsive.css" rel="stylesheet" media="screen">
+    <link href="css/bootstrap-switch.css" rel="stylesheet">
     <link href="css/theme.css" rel="stylesheet">
     <%- stylesheets -%>
     

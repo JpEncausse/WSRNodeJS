@@ -14,3 +14,8 @@ exports.home = function(req, res, next){
 exports.about = function(req, res, next){ 
   res.render('about', { 'nav' : 'about' }); 
 };
+
+exports.badge = function(req, res, next){ 
+  res.set('Content-Type', 'text/xml');
+  res.render('badge'); 
+};

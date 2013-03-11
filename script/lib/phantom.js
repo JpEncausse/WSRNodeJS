@@ -1,4 +1,5 @@
 var exec  = require('child_process').exec;
+var spawn = require('child_process').spawn;
 var fs    = require('fs');
 var xtend = require('./extend.js');
 
@@ -26,17 +27,23 @@ exports.action = function(cmd, data, callback, SARAH){
   options.directory = undefined;
   
   // Build shell path
-  var json   = JSON.stringify(options).replace(/"/g, '\\"');
-  var path   = '%CD%/PhantomJS/phantomjs.exe "%CD%/'+script+'" "' + json + '"';
+  var json = JSON.stringify(options);
+  var path = require('path');
+  var proc = path.normalize(__dirname + "/../../PhantomJS/phantomjs.exe");
   
-  console.log("Phantom: "+path); 
-  var child  = exec(path, function (error, stdout, stderr) {
-    if (stdout){ console.log('Stdout: ' + stdout); }
-    if (stderr){ console.log('Stderr: ' + stderr); }
-    if (error) { console.log('Exec error: ' + error); }
-    
-    // Parse results
-    var json = JSON.parse(stdout);
+  console.log("Phantom: ", proc, script, json); 
+  
+  var child = spawn(proc, [script, json]);
+  
+  child.stderr.on('data', function (data) { 
+    console.log('Error: ',getBuffer(data));
+    callback({'tts' : 'Une erreur est survenue'});
+  });
+  
+  child.stdout.on('data', function (data) { 
+    var response = getBuffer(data); 
+    var json = JSON.parse(response);
+    console.log('Success: ', response);
     
     // Hook perfoming on results
     var module = false;
@@ -50,7 +57,15 @@ exports.action = function(cmd, data, callback, SARAH){
       module.after(options, json);
     }
     
-    // Finish with callback
     callback(json);
   });
+  
+  child.stdin.end();
 }
+
+var getBuffer = function(data){
+  var buff = new Buffer(data);
+  return buff.toString('utf8');
+}
+
+

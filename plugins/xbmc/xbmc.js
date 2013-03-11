@@ -22,10 +22,8 @@ exports.action = function(data, callback, config, SARAH){
         filter = {"or":[]};
         filter.or.push({"field": "title",   "operator": "contains", "value": match[1] });
         filter.or.push({"field": "artist",  "operator": "contains", "value": match[1] });
-        console.log("Match: ", match[1]);
       }
     }
-    
     doPlaylist(filter, config, callback);
   }
   else if (data.action == 'play'){
@@ -91,7 +89,7 @@ var doPlaylist = function(filter, config, callback){
     
     // Iterate
     json.result.songs.forEach(function(song){
-      console.log(song.title);
+      // console.log(song.title);
       addtolist.params.item.songid = song.songid;
       doAction(addtolist, config);
     });

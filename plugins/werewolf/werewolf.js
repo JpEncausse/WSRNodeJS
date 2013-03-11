@@ -82,7 +82,8 @@ var automate = function(data, callback, conf, SARAH){
    
   // Configuration
   config = conf.modules.werewolf;
-
+  
+  console.log(data, WereWolf);
   // ------------------------------------------
   //  1. INIT THE GAME
   // ------------------------------------------
@@ -137,7 +138,7 @@ var automate = function(data, callback, conf, SARAH){
   // ------------------------------------------
 
   if (data.start && WereWolf.state == 'register'){
-    SARAH.play('play' : mp3Dawn );
+    SARAH.play(mp3Dawn);
     callback({'tts' : "Bienvenue dans le village de Thiercelieux !"});
     
     // Kill a first villager handy man for SARAH
