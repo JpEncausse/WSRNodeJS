@@ -85,6 +85,51 @@ var rmdirSyncRecursive = function(path){
 }
 
 // ------------------------------------------
+//  EDITOR
+// ------------------------------------------
+
+var editorGET = function(req, res, next){ 
+  res.render('ajax/editor.ejs', { 
+    'key' : req.param('key'),
+    'type': req.param('type'),
+    'file': req.param('file')
+  });
+};
+
+var editorPOST = function(req, res, next){
+  saveFile(
+    req.param('key'),
+    req.param('file'),
+    req.param('code')
+  );
+  res.end();
+}
+
+var getFiles = function(name){
+  var list = [];
+  var path = 'plugins/'+name+'/'+name;
+  if (fs.existsSync(path+'.js'))  { list.push(name+'.js');  }
+  if (fs.existsSync(path+'.xml')) { list.push(name+'.xml'); }
+  if (fs.existsSync(path+'.prop')){ list.push(name+'.prop');}
+  
+  return list;
+}
+
+var loadFile = function(name, file){
+  if (!name || !file){ return ''; }
+  var path = 'plugins/'+name+'/'+file;
+  var text = fs.readFileSync(path,'utf8');
+  return text;
+}
+
+var saveFile = function(name, file, content){
+  if (!name || !file){ return; }
+  var path = 'plugins/'+name+'/'+file;
+  fs.writeFileSync(path, content, 'utf8');
+  SARAH.ConfigManager.getModule(name, true);
+}
+
+// ------------------------------------------
 //  LIST PLUGINS
 // ------------------------------------------
 
@@ -248,6 +293,10 @@ var PluginManager = {
   // Routes webapp to store
   'routes' : routes,
   
+  // Routes Editor
+  'editorGET':  editorGET,
+  'editorPOST': editorPOST,
+  
   // Download and install
   'install' : installPlugin,
   
@@ -258,7 +307,13 @@ var PluginManager = {
   'getLocals': getLocalPlugins,
 
   // Retrieve information of all plugins
-  'getPlugins': getAllPlugins
+  'getPlugins': getAllPlugins,
+  
+  // Retrieve files for given plugin
+  'getFiles': getFiles,
+  
+  // Retrieve file content
+  'loadFile': loadFile
 }
 
 /**

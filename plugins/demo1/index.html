@@ -1,0 +1,39 @@
+<div id="demo1">
+  
+  <div class="row-fluid">
+		<div class="span11">
+			<p>Le plugin <b>demo1</b> permet d'expliquer simplement le code d'un script pour S.A.R.A.H.</p>
+			<p>Les phrases magiques sont définies dans le fichier de grammaire XML <i>demo1.xml</i> :
+				<ul>
+					<li><i>Sarah, es-tu là ?</i></li>
+					<li><i>Sarah, tu es là ?</i></li>
+					<li><i>Sarah, tu es gentille</i></li>
+					<li><i>Sarah, tu sens bon</i></li>
+					<li><i>Sarah, tu sens mauvais</i></li>
+					<li><i>Sarah, merci beaucoup</i></li>
+				</ul>
+			</p>
+			<p>Le script contient les réponses retournées par S.A.R.A.H.</p>
+			<pre>
+&lt;grammar version=&quot;1.0&quot; xml:lang=&quot;fr-FR&quot; mode=&quot;voice&quot; root=&quot;ruleDemo&quot; xmlns=&quot;http://www.w3.org/2001/06/grammar&quot; tag-format=&quot;semantics/1.0&quot;&gt;
+  &lt;rule id=&quot;ruleDemo&quot; scope=&quot;public&quot;&gt;
+    &lt;example&gt;Sarah, es-tu là ?&lt;/example&gt;
+    &lt;tag&gt;out.action=new Object(); &lt;/tag&gt;
+
+    &lt;item weight=&quot;2&quot;&gt;Sarah&lt;/item&gt;
+
+    &lt;one-of&gt;
+      &lt;item&gt;es tu la&lt;tag&gt;out.action._attributes.tts = &quot;oui, je t'écoute&quot;&lt;/tag&gt;&lt;/item&gt;
+      &lt;item&gt;tu es la&lt;tag&gt;out.action._attributes.tts = &quot;oui, je t'écoute&quot;&lt;/tag&gt;&lt;/item&gt;
+      &lt;item&gt;tu es gentille &lt;tag&gt;out.action._attributes.tts = &quot;merci&quot;&lt;/tag&gt;&lt;/item&gt;
+      &lt;item&gt;tu sens bon&lt;tag&gt;out.action._attributes.tts = &quot;merci, j'aime mon parfum&quot;&lt;/tag&gt;&lt;/item&gt;
+      &lt;item&gt;tu sens mauvais&lt;tag&gt;out.action._attributes.tts = &quot;toi même&quot;&lt;/tag&gt;&lt;/item&gt;
+      &lt;item&gt;merci beaucoup &lt;tag&gt;out.action._attributes.tts = &quot;il n'y a pas de quoi&quot;&lt;/tag&gt;&lt;/item&gt;
+    &lt;/one-of&gt;
+  &lt;/rule&gt; 
+&lt;/grammar&gt;
+			</pre>
+		</div>
+  </div>
+
+</div>

@@ -1,0 +1,8 @@
+{
+  "phantoms": { 
+    "demo3": {
+      "description": "Demo de plugin type PhantomJS",
+      "version": "0.1"
+    }
+  }
+}

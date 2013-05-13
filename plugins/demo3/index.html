@@ -1,0 +1,64 @@
+<div id="demo3">
+
+  <div class="row-fluid">
+    <div class="span11">
+      <p>Le plugin <b>demo3</b> permet d'expliquer simplement le code d'un plugin PhantomJS pour S.A.R.A.H.</p>
+      <p>Le plugin est décrit dans le fichier <i>demo3.prop</i> :</p>
+      <pre>
+{
+  "phantoms": { 
+    "demo3": {
+      "description": "Demo de plugin type PhantomJS",
+      "version": "0.1"
+    }
+  }
+}
+      </pre>
+      <p>Les phrases magiques sont définies dans le fichier de grammaire XML <i>demo3.xml</i> :
+        <ul>
+          <li><i>Sarah, quelle est ton adresse ?</i></li>
+          <li><i>Sarah, quelle est ton IP ?</i></li>
+        </ul>
+      </p>
+      <pre>
+&lt;grammar version=&quot;1.0&quot; xml:lang=&quot;fr-FR&quot; mode=&quot;voice&quot; root=&quot;ruleDemo&quot; xmlns=&quot;http://www.w3.org/2001/06/grammar&quot; tag-format=&quot;semantics/1.0&quot;&gt;
+  &lt;rule id=&quot;ruleDemo&quot; scope=&quot;public&quot;&gt;
+    &lt;example&gt;Sarah quelle est ton IP&lt;/example&gt;
+    &lt;tag&gt;out.action=new Object(); &lt;/tag&gt;
+
+    &lt;item weight=&quot;2&quot;&gt;Sarah&lt;/item&gt;
+
+    &lt;one-of&gt;
+      &lt;item weight=&quot;1.2&quot;&gt;quelle est ton adresse&lt;/item&gt;
+      &lt;item&gt;quelle est ton ipé&lt;/item&gt;
+    &lt;/one-of&gt;
+
+    &lt;tag&gt;out.action._attributes.uri=&quot;http://127.0.0.1:8080/sarah/phantom/demo3&quot;;&lt;/tag&gt;
+  &lt;/rule&gt; 
+&lt;/grammar&gt;
+      </pre>
+      <p>Sur correspondance, le script <i>demo3.js</i> est ensuite exécuté.</p>
+      <p>Le moteur PhantomJS lit la page web <a href="http://wtfismyip.com/text">wtfismyip.com</a>,
+      parse l'adresse IP résultante et la retourne dans la variable <code>results.tts</code>.</p>
+      <pre>
+// Inject helper
+phantom.injectJs("../../script/lib/scraper.js");
+
+// Merge default options with querystring
+var options = {};
+scraper.setOptions(options);
+
+var url = 'http://wtfismyip.com/text';
+
+// Scrap
+scraper.scrap(url, options, function(options, results) {
+  // Play with jQuery and set tts
+  var ip = $('*:first').text();
+  ip = ip.replace(/\./g,' point ');
+  results.tts = 'mon adresse IP est ' + ip;
+});
+      </pre>
+    </div>
+  </div>
+
+</div>

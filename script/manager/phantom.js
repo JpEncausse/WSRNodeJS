@@ -16,8 +16,8 @@ var routes = function(req, res, next){
   var cmd = rUrl.pathname;
   cmd = cmd.substring(cmd.lastIndexOf('/')+1);
   
-  // Run command
-  run(cmd, rQs, res);
+  // Dispatch to SARAH
+  SARAH.run(cmd, rQs, res);
 }
 
 var run = function(cmd, rQs, res){

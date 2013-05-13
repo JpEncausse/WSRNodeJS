@@ -15,7 +15,7 @@ exports.action = function(cmd, data, callback, SARAH){
   }
   
   // Merge Data and Options
-  var options = {}
+  var options = {};
   var config = SARAH.ConfigManager.getConfig();
 
   if (config.phantoms && config.phantoms[cmd]){
@@ -29,12 +29,12 @@ exports.action = function(cmd, data, callback, SARAH){
   // Build shell path
   var json = JSON.stringify(options);
   var path = require('path');
-  var proc = path.normalize(__dirname + "/../../PhantomJS/phantomjs.exe");
+  var soft = config.http.phantom || (__dirname + "/../../PhantomJS/phantomjs.exe");
+  var proc = path.normalize(soft);
   
-  console.log("Phantom: ", proc, script, json); 
+  console.log("Phantom: ", proc, '--proxy-type=none', script, json); 
   
-  var child = spawn(proc, [script, json]);
-  
+  var child = spawn(proc, ['--proxy-type=none', script, json]);
   child.stderr.on('data', function (data) { 
     console.log('Error: ',getBuffer(data));
     callback({'tts' : 'Une erreur est survenue'});
@@ -54,7 +54,7 @@ exports.action = function(cmd, data, callback, SARAH){
     if (module){
       console.log('Running phantom callback %s ...', cmd+'.node');
       options.directory = data.directory;  
-      module.after(options, json);
+      module.after(options, json, SARAH);
     }
     
     callback(json);

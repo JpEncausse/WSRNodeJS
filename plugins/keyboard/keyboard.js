@@ -17,6 +17,7 @@ exports.action = function(data, callback, config, SARAH){
 }
 
 // Call process local to NodeJS
+/*
 var sendInput = function(param, value, app, mod){
   var process = '%CD%/plugins/keyboard/bin/Keyboard.exe';
   
@@ -30,3 +31,4 @@ var sendInput = function(param, value, app, mod){
     if (error !== null) { console.log('exec error: ' + error);  }
   });
 }
+*/

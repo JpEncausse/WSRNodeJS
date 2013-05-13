@@ -48,7 +48,7 @@ var scraper = {
       // Check for page load success
       if (status !== "success") {
         console.log(JSON.stringify(results));
-        phantom.exit();
+        //phantom.exit();
         return;
       }
       
@@ -57,7 +57,7 @@ var scraper = {
       // Load jQuery
       if (!page.injectJs(jquery)){
         console.log(JSON.stringify(results));
-        phantom.exit();
+        //phantom.exit();
         return;
       }
       
@@ -70,7 +70,7 @@ var scraper = {
       
       // Write answer back
       console.log(JSON.stringify(results));
-      phantom.exit();
+      //phantom.exit();
     });
   }
 }

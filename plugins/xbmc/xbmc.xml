@@ -1,0 +1,53 @@
+﻿<grammar version="1.0" xml:lang="fr-FR" mode="voice" root="ruleXBMC" xmlns="http://www.w3.org/2001/06/grammar" tag-format="semantics/1.0">
+
+  <rule id="ruleXBMC" scope="public">
+    <tag>out.action=new Object(); </tag>
+    <item >Sarah</item>
+    <one-of>
+      <item><ruleref uri="#ruleXBMC_playlist"/><tag>out.action = rules.ruleXBMC_playlist;</tag></item>
+      <item><ruleref uri="#ruleXBMC_search"/><tag>out.action = rules.ruleXBMC_search;</tag></item>
+      <item><ruleref uri="#ruleXBMC_Artist"/><tag>out.action = rules.ruleXBMC_Artist;</tag></item>
+	  <item>musique suivante<tag>out.action.action="next"</tag></item>
+      <item>musique précédente<tag>out.action.action="prev"</tag></item>
+      <item>met en pause la musique<tag>out.action.action="play"</tag></item>
+      <item>reprends la musique<tag>out.action.action="play"</tag></item>
+    </one-of>
+    <tag>out.action._attributes.tts = "Je m'en occupe"</tag>
+    <tag>out.action._attributes.uri="http://127.0.0.1:8080/sarah/xbmc";</tag>
+  </rule>  
+  
+  
+  <rule id="ruleXBMC_playlist" scope="public">
+    <example>SARAH joue de la musique Rock</example>
+    <tag>out.action=new Object(); </tag>
+    
+    <item>joue de la musique <tag>out.action.action="playlist"; </tag></item>
+    <one-of>
+<!-- Automatic Generation Genre ¤ -->
+<item> <tag>out.action._attributes.tts = "Le fichier XML n'a jamais été généré!"</tag></item>
+<!-- ¤ Automatic Generation Genre -->
+	  </one-of>
+  </rule>
+
+  <rule id="ruleXBMC_search" scope="public">
+    <example>SARAH recherche * dans les musiques</example>
+    <tag>out.action=new Object();</tag>
+    <tag>out.action.action="playlist";</tag>
+    <item>recherche</item><ruleref special="GARBAGE" /><item>dans les  musiques</item>
+    <tag>out._attributes.dictation="true";</tag> 
+  </rule>
+
+  <rule id="ruleXBMC_Artist" scope="public">
+    <example>SARAH je veux écouter ACDC</example>
+    <tag>out.action=new Object();</tag>
+    <tag>out.action.action="artist";</tag>
+    <item>je veux écouter</item>
+	<one-of>
+<!-- Automatic Generation Artist § -->
+<item> <tag>out.action._attributes.tts = "Le fichier XML n'a jamais été généré!"</tag></item>
+<!-- § Automatic Generation Artist -->
+	</one-of>
+  </rule>
+  
+</grammar>
+ 

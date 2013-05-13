@@ -75,6 +75,8 @@ SARAH.PluginManager.load(webpath);
 app.use('/assets/',   express.static(webpath));
 app.get('/plugins/*', SARAH.PluginManager.display);
 app.get('/store',     SARAH.PluginManager.routes);
+app.get('/editor',    SARAH.PluginManager.editorGET);
+app.post('/editor',   SARAH.PluginManager.editorPOST);
 
 // ==========================================
 //  RULE MANAGER
@@ -108,6 +110,7 @@ SARAH.CRONManager.startAll();
 // ==========================================
 //  START SERVER
 // ==========================================
+
 
 var webapp = server.listen(SARAH.ConfigManager.getConfig().http.port);
 console.log("Express server listening on port %d", webapp.address().port);

@@ -41,7 +41,7 @@
 	            </div><!--/span-->
 	            <div class="span4">
 	              <a name="http" ></a>
-	              <h2>Serveur HTTP</h2>
+	              <h2>Serveur NodeJS</h2>
 	              <p>Le coeur de l'agent est un serveur HTTP qui reçoit des requêtes liées à des commandes vocales mais aussi à d'autres stimulis.</p>
 	              <p>Cette section permet de paramétrer le serveur NodeJS.</p>
 	              <%- partial('fragments/modal', {'type' : '', 'key' : 'http', 'module' : config.http }) %>
@@ -60,8 +60,9 @@
  * @param data json object of the QueryString
  * @param callback function to call with the text to speech
  * @param config the application configuration
+ * @param SARAH singleton to access API
  */
-exports.action = function(data, callback, config){
+exports.action = function(data, callback, config, SARAH){
   callback({'tts': text});
 }</pre>
             <%- partial('fragments/module', {'type' : 'modules',  'modules' : config.modules }) %>
@@ -95,11 +96,11 @@ exports.action = function(data, callback, config){
 	          <p>Le CRON calendar permet de vocaliser du texte à des moments précis. GoogleCalendar devient alors une timeline. Et couplé à des règles <a href="https://ifttt.com/google_calendar">Ifttt</a> ça devient un pont entre la maison et internet.</p>
 <pre>
 /**
- * @param data json object of the QueryQtring
  * @param callback function to call with the text to speech
- * @param config the application configuration
+ * @param task the task object
+ * @param SARAH singleton to access API
  */
-exports.cron = function(callback, task){
+exports.cron = function(callback, task, SARAH){
   callback({"tts" : "Text to speech")});
 }</pre>
 	          <%- partial('fragments/module', {'type' : 'cron', 'modules' : config.cron }) %>
@@ -109,4 +110,6 @@ exports.cron = function(callback, task){
       </div><!--/row-->
 
     </div><!--/.fluid-container-->
+    
+    <%- partial('fragments/editor') %>
     <%- partial('fragments/footer') %>

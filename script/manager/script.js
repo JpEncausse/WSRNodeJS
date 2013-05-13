@@ -16,8 +16,8 @@ var routes = function(req, res, next){
   var cmd = rUrl.pathname;
   cmd = cmd.substring(cmd.lastIndexOf('/')+1);
   
-  // Run command
-  run(cmd, rQs, res);
+  // Dispatch to SARAH
+  SARAH.run(cmd, rQs, res);
 }
 
 var run = function(cmd, rQs, res){
@@ -26,7 +26,6 @@ var run = function(cmd, rQs, res){
   var callback = function(opts){
     var options = xtend.extend(true, rQs, opts);
     SARAH.dispatch(cmd, options, res);
-    
   }
   
   // Call script
@@ -35,7 +34,7 @@ var run = function(cmd, rQs, res){
     module.action(rQs, callback, SARAH.ConfigManager.getConfig(), SARAH);
   }
   catch(ex){ 
-    console.log('Run: ',ex);
+    console.log('Run: ', ex);
     if (res){ res.end(); }
   }
 }

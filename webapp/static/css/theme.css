@@ -27,6 +27,10 @@
   text-transform: capitalize;
 }
 
+.plugin {
+  border-bottom: 1px dashed #B9B8B8;
+}
+
 .modal FORM {
   margin-bottom: 0;
 }
@@ -76,6 +80,26 @@ FOOTER {
 }
 
 /* ------------------------------------------ */
+/*  EDITOR                                    */
+/* ------------------------------------------ */
+
+#editor {
+  width: 900px;
+  margin-left: -450px;
+}
+#editor .modal-body { padding: 0 15px 0 0; }
+#editor .CodeMirror { height: 350px; }
+
+.CodeMirror {
+  border: 1px solid #eee;
+  height: auto; 
+}
+.CodeMirror-scroll {
+  overflow-y: hidden;
+  overflow-x: auto;
+}
+
+/* ------------------------------------------ */
 /*  IFTTT                                     */
 /* ------------------------------------------ */
 
@@ -119,14 +143,11 @@ FOOTER {
 }
 
 DIV.CodeMirror {
+  height: 200px;
   margin-left:  -15px;
   margin-right: -15px;
   border-top:    1px solid #EEE;
   border-bottom: 1px solid #EEE;
-}
-
-DIV.CodeMirror-scroll {
-  height: 200px;
 }
 
 #modalRules H3 {

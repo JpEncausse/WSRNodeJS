@@ -42,6 +42,15 @@ var saveRules = function(req, res, next){
  * Return true if dispatch has been performed otherwise false
  */
 var dispatch = function(cmd, options){
+  options._cmd = cmd;
+  iterate('before',    options);
+  var r = iterate(cmd, options);
+  iterate('after',     options);
+  
+  return r;
+}
+
+var iterate = function(cmd, options){
   var speak = false;
   var hasRule = false;
 

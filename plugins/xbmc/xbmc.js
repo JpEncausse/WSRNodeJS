@@ -7,8 +7,14 @@ exports.action = function(data, callback, config, SARAH){
   }
   
   if (data.action == 'introspect'){
-    doAction(introspect, config, callback);
+    doAction(xml, config, callback);
   }
+  else if (data.action == 'xml_artist'){
+    doXML(xml_artist, config, callback);
+  }  
+  else if (data.action == 'xml_genre'){
+    doXML(xml_genre, config, callback);
+  }  
   else if (data.action == 'playlist'){
     var filter = {"and":[]};
     if (data.genre) { filter.and.push({"field": "genre",  "operator": "contains", "value": data.genre  }); }
@@ -26,7 +32,12 @@ exports.action = function(data, callback, config, SARAH){
     }
     doPlaylist(filter, config, callback);
   }
-  else if (data.action == 'play'){
+   else if (data.action == 'artist'){
+    var filter = {"and":[]};
+    if (data.artist){ filter.and.push({"field": "artist", "operator": "contains", "value": data.artist }); }
+    doPlaylist(filter, config, callback);
+	
+  } else if (data.action == 'play'){
     doAction(play, config, callback);
   }
   else if (data.action == 'next'){
@@ -50,6 +61,10 @@ exports.action = function(data, callback, config, SARAH){
 
 // Introspect
 var introspect = { "jsonrpc": "2.0", "method": "JSONRPC.Introspect", "params": { "filter": { "id": "AudioLibrary.GetSongs", "type": "method" } }, "id": 1 }
+
+// XML Generation
+var xml_artist= {"jsonrpc": "2.0", "method": "AudioLibrary.GetArtists",  "params": {}, "id": 1}
+var xml_genre= {"jsonrpc": "2.0", "method": "AudioLibrary.GetGenres",  "params": {}, "id": 1}
 
 // Toggle play / pause in current player
 var play = {"jsonrpc": "2.0", "method": "Player.PlayPause",  "params": { "playerid": 0 }, "id": 1}
@@ -103,21 +118,69 @@ var doAction = function(req, config, callback, hook){
 
   // Send a simple JSON request
   sendJSONRequest(config.api_url, req, function(res){
-  
-    // Common response
-    if (!handleJSONResponse(res, callback)){ return; }
+ 
+	if (!handleJSONResponse(res, callback)){ return; }
     
     // Do stuff
     if (hook){
       try { if (!hook(res)){ return; }} catch(ex){ console.log(res); }
     }
     
+	
     // Otherwise
     if (callback){ callback({}) };
   });
 } 
 
+var doXML = function(req, config, callback, hook){
 
+  // Send a simple JSON request
+  sendJSONRequest(config.api_url, req, function(res){
+
+  // Generation XML Artist
+  if ((typeof res.result.artists != 'undefined') && (typeof res.result.limits != 'undefined')){
+		var ligneitem ='';
+		var replace  = '§ -->\n'; 	
+		res.result.artists.forEach(function(value) {
+			ligneitem='<item>'+value.label.replace("&","and")+'<tag>out.action.artist = "'+value.label.replace("&","&amp;")+'"</tag></item>\n'
+			replace+=(ligneitem);
+		});
+		var fs = require('fs');
+		var fileXML = 'plugins/xbmc/xbmc.xml';
+		var xml = fs.readFileSync(fileXML,'utf8');
+		replace += '<!-- §';
+		//console.log(replace);
+		var regexp = new RegExp('§[^§]+§','gm');
+		var xml    = xml.replace(regexp,replace);
+		//console.log(xml);
+		fs.writeFileSync(fileXML, xml, 'utf8');
+		console.log ('XBMC plugin: Mise à jour de '+res.result.limits.total+' artistes dans xbmc.xml')
+		}
+	
+  // Generation XML Genre
+	if ((typeof res.result.genres != 'undefined') && (typeof res.result.limits != 'undefined')){
+		var ligneitem ='';
+		var replace  = '¤ -->\n'; 	
+		res.result.genres.forEach(function(value) {
+			ligneitem='<item>'+value.label.replace("&","and")+'<tag>out.action.genre = "'+value.label.replace("&","&amp;")+'"</tag></item>\n'
+			replace+=(ligneitem);
+		});
+		var fs = require('fs');
+		var fileXML = 'plugins/xbmc/xbmc.xml';
+		var xml = fs.readFileSync(fileXML,'utf8');
+		replace += '<!-- ¤';
+		//console.log(replace);
+		var regexp = new RegExp('¤[^¤]+¤','gm');
+		var xml    = xml.replace(regexp,replace);
+		//console.log(xml);
+		fs.writeFileSync(fileXML, xml, 'utf8');
+		console.log ('XBMC plugin: Mise à jour de '+res.result.limits.total+' genres dans xbmc.xml')
+		}
+	
+    // Otherwise
+    if (callback){ callback({}) };
+  });
+} 
 // -------------------------------------------
 //  JSON
 // -------------------------------------------

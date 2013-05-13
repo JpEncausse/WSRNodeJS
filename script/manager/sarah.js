@@ -3,11 +3,32 @@
 //  RUN
 // ------------------------------------------
 
+var exists = function(cmd){
+  if (config.modules[cmd] || cmd == 'time'){
+    return true;
+  }
+  
+  if (config.phantoms[cmd]){
+    return true;
+  }
+  
+  return false;
+}
+
 var run = function(cmd, options, res){
   var config = SARAH.ConfigManager.getConfig();
+  var xtend  = require('../lib/extend.js');
+  
+  // Backup last command
+  if (res){ // Main request
+    SARAH.context.last =  { 
+      'cmd'    : cmd, 
+      'options': xtend.extend(true, {}, options)
+    };
+  }
   
   // Run modules script
-  if (config.modules[cmd]){
+  if (config.modules[cmd] || cmd == 'time'){
     SARAH.ScriptManager.run(cmd, options, res);
     return;
   } 
@@ -16,6 +37,11 @@ var run = function(cmd, options, res){
   if (config.phantoms[cmd]) {
     SARAH.PhantomManager.run(cmd, options, res);
   }
+}
+
+var last = function(res){
+  if (!SARAH.context.last){ return; }
+  SARAH.run(SARAH.context.last.cmd, SARAH.context.last.options, res);
 }
 
 // ------------------------------------------
@@ -32,8 +58,6 @@ var dispatch = function(cmd, options, res){
     if (res){ res.end(); }
     return;
   }
-  
-  // console.log('Dispatch:', cmd, options);
   
   // Write end
   if (res){ res.end(options.tts); return; }
@@ -110,9 +134,9 @@ var gesture = function(action) {
 };
 
 var keyText = function(text) {
-  if (!keyText){ return;}
-  console.log("KeyText:", keyText);
-  remote({ 'keyText' : keyText });
+  if (!text){ return;}
+  console.log("KeyText:", text);
+  remote({ 'keyText' : text });
 };
 
 var runApp = function(app) {
@@ -159,6 +183,8 @@ var SARAH = {
     return SARAH;
   },
   
+  'context' : {},
+  
   'render': render,
   
   // Callback for all scripts / phantom / cron
@@ -194,7 +220,13 @@ var SARAH = {
   'script': script,
   
   // Run local module
-  'run': run
+  'run': run,
+  
+  // Run last runned module
+  'last': last,
+  
+  // Check if module exists
+  'exists' : exists
 }
 
 

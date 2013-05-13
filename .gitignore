@@ -28,6 +28,8 @@ overview.docx
 README/SayStatic/
 README/ScanSoftTTS/
 README/changelog.txt
+plugins/karotz/java/jre
+
 
 # External tool builders
 .externalToolBuilders/

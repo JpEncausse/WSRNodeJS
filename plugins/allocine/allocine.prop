@@ -1,0 +1,8 @@
+{
+  "modules" : { 
+    "allocine"  : {
+      "description": "Scraping de Allociné",
+      "version"    : "2.0"
+    }
+  }
+}

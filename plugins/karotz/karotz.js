@@ -1,4 +1,4 @@
-var exec = require('child_process').exec;
+
 
 exports.action = function(data, callback, config){
   
@@ -13,7 +13,9 @@ exports.action = function(data, callback, config){
   
   // Take photos
   else if (data.photo){
-    sendKarotz(config, '-photo "http://'+config.http.ip+':'+config.http.port+'/upload" -timeout '+ (data.timeout || 5000));
+    var upload = 'http://'+config.http.ip+':'+config.http.port+'/upload';
+    console.log('Upload To', upload);
+    sendKarotz(config, '-photo "'+upload+'" -timeout '+ (data.timeout || 5000));
   }
   
   // Play music
@@ -22,13 +24,17 @@ exports.action = function(data, callback, config){
   }
 }
 
+
+var exec = require('child_process').exec;
 var sendKarotz = function(config, args){
-  var process = '%CD%/plugins/karotz/bin/KarotzNet.exe -ip '+config.modules.karotz.ip+' '+args;
+  // %CD%/jre/bin/java -jar karotzjava.jar 192.168.0.20 -tts "Bonjour le monde"
+  var path = require('path');
+  var proc = path.normalize(__dirname + "/java/jre/bin/java"); 
+  var jar  = path.normalize(__dirname + "/java/karotzjava.jar");
+  var process = proc + ' -jar '+jar+' '+config.modules.karotz.ip+' '+args;
   console.log(process);
   var child = exec(process,
   function (error, stdout, stderr) {
-    // console.log('stdout: ' + stdout);
-    // console.log('stderr: ' + stderr);
     if (error !== null) {
       console.log('exec error: ' + error);
     }

@@ -1,0 +1,13 @@
+<grammar version="1.0" xml:lang="fr-FR" mode="voice" root="ruleDictionary" xmlns="http://www.w3.org/2001/06/grammar" tag-format="semantics/1.0">
+  <rule id="ruleDictionary" scope="public">
+    <example>Sarah Recherche * sur Wikipedia</example>
+    <tag>out.action=new Object(); </tag>
+
+    <item>Sarah recherche</item>
+    <ruleref special="GARBAGE" />
+    <item>wikipedia</item>
+    
+    <tag>out.action._attributes.uri="http://127.0.0.1:8080/sarah/dictionary";</tag>
+    <tag>out.action._attributes.dictation="true";</tag>
+  </rule>
+</grammar>

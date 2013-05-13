@@ -1,0 +1,52 @@
+<grammar version="1.0" xml:lang="fr-FR" mode="voice"  root="ruleMovies" xmlns="http://www.w3.org/2001/06/grammar" tag-format="semantics/1.0">
+
+  <rule id="ruleMovies">
+    <tag>out.action=new Object(); </tag>
+    <item weight="2">Sarah</item>
+    <one-of>
+      <item><ruleref uri="#ruleMoviePlace"/><tag>out.action = rules.ruleMoviePlace;</tag></item>
+      <item><ruleref uri="#ruleMovieTime"/><tag>out.action = rules.ruleMovieTime;</tag></item>
+    </one-of>
+    <tag>out.action._attributes.uri="http://127.0.0.1:8080/sarah/allocine";</tag>
+  </rule>
+  
+  <rule id="ruleMoviePlace">
+    <example>Sarah qu'est ce qu'il y a au ciné à Vaucresson ?</example>
+    <tag>out.place="B0172"; </tag>
+    <one-of>
+      <item>il y a quoi au ciné</item>
+      <item>il y a quoi au cinéma</item>
+      <item>qu'est qu'il y a au ciné</item>
+      <item>qu'est qu'il y a au cinéma</item>
+    </one-of>
+    <item repeat="0-1">
+      <one-of>
+        <item>cette semaine</item>
+        <item>en ce moment</item>
+        <item>ce soir</item>
+      </one-of>
+    </item>
+    <item repeat="0-1">
+      <one-of>
+        <item>à Parly 2 <tag>out.place="B0172";</tag></item>
+        <item>à vaucresson<tag>out.place="B0099";</tag></item>
+      </one-of>
+    </item>
+  </rule>
+
+  <rule id="ruleMovieTime">
+    <example>Sarah a quelle heure passe Eureka ?</example>
+    <one-of>
+      <item>a quelle heure passe</item>
+      <item>quand passe</item>
+      <item>quelle sont les séances pour</item>
+    </one-of>
+    <ruleref uri="#ruleMovieName"/>
+  </rule>
+  
+<!-- Automatic Generation § -->
+<rule id="ruleMovieName">
+
+</rule>
+<!-- § Automatic Generation -->
+</grammar>

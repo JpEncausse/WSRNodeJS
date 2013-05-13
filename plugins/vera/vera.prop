@@ -1,0 +1,9 @@
+{
+  "modules" : { 
+    "vera"  : {
+      "description": "Petit test d'accès à la VERA Lite",
+      "version"    : "1.0",
+      "api_url": "http://ipadress:3480/data_request?id=lu_action&serviceId=urn:micasaverde-com:serviceId:HomeAutomationGateway1&action=RunScene"
+    }
+  }
+}

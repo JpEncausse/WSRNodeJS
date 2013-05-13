@@ -1,0 +1,8 @@
+{
+  "modules" : { 
+    "chatterbot":     {
+      "description": "Chatterbot Riversccript",
+      "version"    : "2.0"
+    }
+  }
+}

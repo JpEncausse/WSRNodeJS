@@ -77,6 +77,17 @@ var loadPlugins = function(folder, conf){
   return conf;
 }
 
+var getJSON = function(name){
+  var path = 'plugins/'+name+'/'+name+'.prop';
+  if (!fs.existsSync(path)){ return {}; }
+  
+  console.log('Loading plugin properties %s ...', path);
+  try {
+    var json = fs.readFileSync(path,'utf8');
+    return JSON.parse(json);
+  } catch(ex){ console.log(ex); }
+}
+
 /**
  * Load default properties
  */
@@ -143,17 +154,17 @@ var routes = function(req, res, next){
 //  GET MODULE
 // ------------------------------------------
 
-var getModule = function(name){
+var getModule = function(name, uncache){
   var module = false;
   try {
     var path = '../../plugins/'+name+'/'+name+'.js';
-    if (config.debug){ require.uncache(path); }
+    if (config.debug || uncache){ require.uncache(path); }
     module = require(path); 
   } 
   catch (ex) { 
     try { 
       var path = '../'+name+'.js';
-      if (config.debug){ require.uncache(path); } 
+      if (config.debug || uncache){ require.uncache(path); } 
       module = require(path); 
     } catch (ex) { }
   }
@@ -209,6 +220,9 @@ var ConfigManager = {
   
   // Require a module / plugin 
   'getModule': getModule,
+  
+  // Return JSON of given plugin (without custom)
+  'getJSON': getJSON,
   
   // Return remote ticker message
   'getTicker': getTicker,

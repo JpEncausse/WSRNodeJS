@@ -1,0 +1,1 @@
+%CD%/jre/bin/java -jar karotzjava.jar 192.168.0.20 -tts "Bonjour le monde"

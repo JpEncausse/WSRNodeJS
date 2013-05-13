@@ -1,0 +1,17 @@
+<grammar version="1.0" xml:lang="fr-FR" mode="voice" root="ruleDemo" xmlns="http://www.w3.org/2001/06/grammar" tag-format="semantics/1.0">
+  <rule id="ruleDemo" scope="public">
+    <example>Sarah, es-tu là ?</example>
+    <tag>out.action=new Object(); </tag>
+
+    <item weight="2">Sarah</item>
+
+    <one-of>
+      <item>es tu la<tag>out.action._attributes.tts = "oui, je t'écoute"</tag></item>
+      <item>tu es la<tag>out.action._attributes.tts = "oui, je t'écoute"</tag></item>
+      <item>tu es gentille <tag>out.action._attributes.tts = "merci"</tag></item>
+      <item>tu sens bon<tag>out.action._attributes.tts = "merci, j'aime mon parfum"</tag></item>
+      <item>tu sens mauvais<tag>out.action._attributes.tts = "toi même"</tag></item>
+      <item>merci beaucoup <tag>out.action._attributes.tts = "il n'y a pas de quoi"</tag></item>
+    </one-of>
+  </rule> 
+</grammar>

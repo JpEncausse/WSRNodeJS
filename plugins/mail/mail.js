@@ -2,7 +2,7 @@ exports.action = function(data, callback, config){
 
   // Retrieve config
   config = config.modules.mail;
-  if (!config.text || !config.subject){
+  if (!config || !data.text || !data.subject){
     console.log("Missing Mail config");
     callback({});
     return;

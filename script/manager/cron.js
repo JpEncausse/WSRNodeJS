@@ -30,13 +30,13 @@ var startJob = function(task, module){
     cronTime: task.time,
     onTick: function() {
       console.log('Cron: %s', task.name);
-      module.cron(callback, task);
+      module.cron(callback, task, SARAH);
     },
     start: true
   });
   
   // First call
-  module.cron(callback, task);
+  module.cron(callback, task, SARAH);
 }
 
 /**

@@ -1,8 +1,8 @@
 {
-  "phantoms" : { 
+  "modules" : { 
     "meteo"  : {
       "description": "Recherche la météo en ligne",
-      "version"    : "1.0",
+      "version": "2.0",
       "zip": "versailles/78000",
       "date": "3"
     }

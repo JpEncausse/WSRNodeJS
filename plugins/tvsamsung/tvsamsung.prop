@@ -1,0 +1,9 @@
+{
+  "modules" : { 
+    "tvsamsung"  : {
+      "description": "Envoie des messages sur la TV Samsung",
+      "version"    : "1.0",
+      "tvip"       : "127.0.0.1"
+    }
+  }
+}

@@ -1,7 +1,10 @@
 <p>
-  <a class="btn" href="#" data-toggle="modal" data-target="#<%= type %>_<%= key %>">Configurer &raquo;</a>
+  <a class="btn edit-config" href="#" data-toggle="modal" data-target="#<%= type %>_<%= key %>" title="Configurer le module"><i class="icon-wrench"></i> Config.</a>
   <% if (SARAH.PluginManager.hasWebPage(key)){ %>
-  <a class="btn" href="/plugins/<%= key %>">Module &raquo;</a>
+  <a class="btn" href="/plugins/<%= key %>" title="Documentation"><i class="icon-globe"></i> Doc.</a>
+  <% } %>
+  <% if (type){ %>
+  <a class="btn edit-plugin pull-right" href="editor?type=<%= type %>&key=<%= key %>" title="Editer les fichiers"><i class="icon-pencil"></i></a>
   <% } %>
 </p>
 <div class="modal hide fade" id="<%= type %>_<%= key %>">
@@ -18,19 +21,26 @@
 	  <% Object.keys(module).forEach(function(attr){ %>
 	  <% var value = module[attr]; %>
 	  <% if (attr == 'description') return; %>
+	  <% if (attr == 'version')     return; %>
 	  <div class="control-group">
 	    <label class="control-label" for="#<%= key %>_<%= attr %>"><%= attr %></label>
 	    <div class="controls">
 	      <input type="text" id="<%= key %>_<%= attr %>" name="<%= attr %>" value="<%= value %>" placeholder="Saisir la valeur...">
 	    </div>
 	  </div>
-	  
 	  <% }); %>
 	  <input type='hidden' name='key' value='<%= (type.length > 0 ? type+'.' : '') + key %>'/>
   </div>
   <div class="modal-footer">
+    <% 
+      var v = SARAH.ConfigManager.getJSON(key);
+      v = v[type] || false; v = v[key]  || false; v = v.version || false;
+      if (v) {
+    %>
+    <div class="pull-left btn disabled">v<%= v %></div>
+    <input type="hidden" name="version" value="<%= v %>"/>
+    <% } %>
     <a href="#" class="btn" data-dismiss="modal">Fermer</a>
-    
     <button type="submit" class="btn btn-primary">Enregistrer</a>
   </div>
   </form>
