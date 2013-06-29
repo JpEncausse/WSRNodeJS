@@ -1,8 +1,0 @@
-{
-  "modules": { 
-    "demo2": {
-      "description": "Demo de plugin type Module",
-      "version": "0.1"
-    }
-  }
-}

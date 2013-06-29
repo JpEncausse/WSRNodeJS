@@ -1,9 +1,0 @@
-{
-  "modules" : { 
-    "xbmc":     {
-      "description": "Commande Vocale pour XBMC",
-      "version"    : "1.2",
-      "api_url"    : "http://127.0.0.1:8077/jsonrpc"
-    }
-  }
-}

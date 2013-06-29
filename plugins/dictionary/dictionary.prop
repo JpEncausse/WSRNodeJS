@@ -1,8 +1,0 @@
-{
-  "modules" : { 
-    "dictionary"  : {
-      "description": "Recherche d'une définition sur Wikipedia",
-      "version"    : "2.0"
-    }
-  }
-}

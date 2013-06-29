@@ -1,8 +1,0 @@
-{
-  "modules" : { 
-    "commands"  : {
-      "description": "Send play/pause/speak remote commands to WSRMacro",
-      "version"    : "1.0"
-    }
-  }
-}

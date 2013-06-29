@@ -1,8 +1,0 @@
-{
-  "modules" : { 
-    "speechbox"  : {
-      "description": "Reçoit les messages de SpeechBox",
-      "version"    : "1.0"
-    }
-  }
-}
