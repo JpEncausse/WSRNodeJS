@@ -2,70 +2,56 @@
     
     <%- partial('fragments/navbar') %>
     <%- partial('fragments/confirm') %>
+    <%- partial('fragments/headline') %>
+    
+    <div id="container" class="container">
 
-    <div id="container" class="container-fluid">
-      <div class="row-fluid">
-        <div class="span2" id="sidebar">
-          
-          <%- partial('fragments/sidenav') %>
-          
-        </div><!--/span-->
-        <div class="span10">
-          <div class="hero-unit" id="headline">
-            <h1>Plugin's Store</h1>
-	        </div>
-	        
-	        <div class="page">
-	          <h2>Plugins</h2>
-	          <p>Voici la liste des plugins disponibles pour S.A.R.A.H. Vous devez <strong>suprimer un plugin pour installer</strong> une nouvelle version. </p>
-	          
-	          <div class="alert alert-info" style="width: 400px; margin: 10px auto;">
-						  <h4>Remarque :</h4>
-						  Le serveur doit être redémarré après modifications.
-						</div>
-	          
-	          <h4>Pour diffuser vos plugins:</h4>
-	          <ol>
-	            <li>S'inscrire <a href="https://groups.google.com/forum/#!forum/sarah_domotique">sur le forum</a></li>
-	            <li>Créer une discussion <strong>"Module {Nom}"</strong> dans la rubrique <strong>Modules, CRON ou Scraping</strong></li>
-	            <li>Diffuser les différentes version du plugin, en précisant version, auteur, tags, description, ...</li>
-	            <li>Le zip du plugin doit contenir directement les fichiers</li> 
-	          </ol>
-	          <p>&nbsp;</p>
-            <table class="table table-bordered table-striped table-hover">
-              <tr>
-                <th>Nom</th>
-                <th>Version</th>
-                <th>Auteur</th>
-                <th>Catégorie</th>
-                <th>Description</th>
-                <th>&nbsp;</th>
-              </tr>
-            <% var plugins = SARAH.PluginManager.getPlugins(); %>
-            <% for (var p in plugins){ %>
-            <% var plugin = plugins[p]; %>
-              <tr>
-                <% if (!plugin.url) { %><td><%= plugin.name %></td><% } else { %>
-                <td><a href="<%= plugin.url %>" target="_blank"><%= plugin.name %></a></td><% } %>
-                <td><%= plugin.v %></td>
-                <td><%- plugin.author.indexOf('@') == 0 ? "<a href='http://twitter.com/"+plugin.author.substring(1)+"'>"+plugin.author+"</a>" : plugin.author %></td>
-                <td><%= plugin.tags %></td>
-                <td><%= plugin.description %></td>
-                <td> 
-                <% if (plugin.installed){ %>
-                  <a href="/store?delete=<%= plugin.name %>" class="btn btn-danger confirm" title="Confirmer la suppression du plugin : '<%= plugin.name %>' ?">Supprimer...</a>
-                <% } else if (plugin.remote){ %>
-                  <a href="/store?install=<%= plugin.name %>" class="btn btn-primary confirm" title="Confirmer l'installation du plugin : '<%= plugin.name %>' ?">Installer...</a>
-                <% } %>
-                </td>
-              </tr>
+      <div class="page">
+        <h2>Plugins</h2>
+        <p>
+          Voici la liste des plugins disponibles pour S.A.R.A.H. 
+          Vous devez <strong>suprimer un plugin pour installer</strong> une nouvelle version.
+          Le serveur <strong>doit être redémarré après modifications</strong>.
+        </p>
+
+        <h4>Pour diffuser vos plugins:</h4>
+        <ol>
+          <li>S'inscrire <a href="https://plus.google.com/u/0/communities/105964514508504667709">sur la comunauté Google+</a></li>
+          <li><a href="http://encausse.wordpress.com/s-a-r-a-h/s-a-r-a-h-documentation/comment-publier-plugin/">Comment publier ses plugins dans l’AppStore ?</a></li> 
+        </ol>
+        <p>&nbsp;</p>
+        <table class="table table-bordered table-striped table-hover">
+          <tr>
+            <th>Nom</th>
+            <th>Stats</th>
+            <th>Version</th>
+            <th>Auteur</th>
+            <th>Catégorie</th>
+            <th>Description</th>
+            <th>&nbsp;</th>
+          </tr>
+        <% var plugins = SARAH.PluginManager.getPlugins(); %>
+        <% for (var p in plugins){ %>
+        <% var plugin = plugins[p]; %> 
+          <tr>
+            <% if (!plugin.url) { %><td><%= plugin.name %></td><% } else { %> 
+            <td><a href="<%= plugin.url %>" target="_blank"><%= plugin.name %></a></td><% } %>
+            <td style="text-align: center;" nowrap><% if (plugin.dl){ %><a href="#" data-dl="<%= plugin.dl %>"><i class="icon-signal"></i></a><% } %></td>
+            <td><%= plugin.v %></td>
+            <td><%- plugin.author.indexOf('@') == 0 ? "<a href='http://twitter.com/"+plugin.author.substring(1)+"'>"+plugin.author+"</a>" : plugin.author %></td>
+            <td><%= plugin.tags %></td>
+            <td><%= plugin.description %></td>
+            <td> 
+            <% if (plugin.installed){ %>
+              <a href="/store?delete=<%= plugin.name %>" class="btn btn-danger confirm" title="Confirmer la suppression du plugin : '<%= plugin.name %>' ?">Supprimer...</a>
+            <% } else if (plugin.remote && plugin.dl){ %>
+              <a href="/store?install=<%= plugin.name %>" class="btn btn-primary confirm" title="Confirmer l'installation du plugin : '<%= plugin.name %>' ?">Installer...</a>
             <% } %>
-            </table>
-
-          </div>
+            </td>
+          </tr>
+        <% } %>
+        </table>
+      </div>
 	        
-        </div><!--/span-->
-      </div><!--/row-->
-
     </div><!--/.fluid-container-->
     <%- partial('fragments/footer') %>

@@ -8,6 +8,23 @@ String.prototype.endsWith = function(suffix) {
 };
 
 // ==========================================
+//  LOG MANAGER
+// ==========================================
+
+var winston = require('winston');
+winston.add(winston.transports.File, { filename: 'script/wsrnode.log' });
+winston.addColors({ info : 'blue' });
+
+winston.info("==========================================");
+winston.info(" STARTING WSRNodeJS ");
+winston.info("==========================================");
+
+process.on('uncaughtException', function (err) {
+  winston.log('error','Caught exception: '+err);
+});
+
+
+// ==========================================
 //  SARAH MANAGER
 // ==========================================
 
@@ -100,6 +117,15 @@ app.post('/upload*', function(req, res, next){
 
 app.get('/sarah/phantom/*',  SARAH.PhantomManager.routes);
 app.get('/sarah/*',          SARAH.ScriptManager.routes);
+app.post('/sarah/*',         SARAH.ScriptManager.routes);
+
+// ==========================================
+//  INIT MODULES
+// ==========================================
+
+for(var module in SARAH.ConfigManager.getConfig()['modules']){
+  SARAH.ConfigManager.getModule(module);
+}
 
 // ==========================================
 //  CRON MANAGER
@@ -111,7 +137,6 @@ SARAH.CRONManager.startAll();
 //  START SERVER
 // ==========================================
 
-
 var webapp = server.listen(SARAH.ConfigManager.getConfig().http.port);
-console.log("Express server listening on port %d", webapp.address().port);
+winston.log('info', "Express server listening on port %d", webapp.address().port);
 

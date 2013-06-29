@@ -1,6 +1,7 @@
 var url   = require('url');
 var qs    = require('querystring');
 var xtend = require('../lib/extend.js');
+var winston = require('winston');
 
 // ------------------------------------------
 //  ROUTES  PHANTOM
@@ -11,7 +12,8 @@ var routes = function(req, res, next){
   // Parse URL & QueryString
   var rUrl = url.parse(req.url);
   var rQs  = qs.parse(rUrl.query);
-  
+  rQs.body = req.body;
+    
   // Parse Command
   var cmd = rUrl.pathname;
   cmd = cmd.substring(cmd.lastIndexOf('/')+1);
@@ -20,20 +22,26 @@ var routes = function(req, res, next){
   SARAH.run(cmd, rQs, res);
 }
 
-var run = function(cmd, rQs, res){
+var run = function(cmd, rQs, res, cb){
   // Callback
   var callback = function(opts){
+    var end = (new Date()).getTime();
+    winston.log('info', 'Run '+cmd+': '+(end-start)+'ms');
+    
+    if (cb){ return cb(opts); }
+    
     var options = xtend.extend(true, rQs, opts);
     SARAH.dispatch(cmd, options, res);
   }
   
   // Call phantom
+  var start = (new Date()).getTime();
   try {
     var phantom = require('../lib/phantom.js'); 
     phantom.action(cmd, rQs, callback, SARAH);
   } 
   catch(ex){ 
-    console.log(ex);
+    winston.log('warn', 'Phantom '+cmd+': ', ex);
     SARAH.dispatch({ tts : 'Je ne comprends pas'}, res); 
   }
 }

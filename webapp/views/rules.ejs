@@ -1,11 +1,9 @@
 <% layout('layouts/layout') %>
-    
-    <%- partial('fragments/navbar') %>
-    
-    <% script('js/rules.js') %>
 
-    <%- partial('fragments/codearea') %>
-    
+    <% script('js/rules.js') %>
+    <%- partial('fragments/navbar') %>
+    <%- partial('fragments/headline') %>
+    <%- partial('fragments/codearea') %>   
     <% 
       var init = false;
       var rules = SARAH.ConfigManager.getConfig().rules;
@@ -19,18 +17,8 @@
         rules.push({ "if" : "after",  "then" : " ", "script" : " " });
       }
     %>
-    <div id="container" class="container-fluid">
-      <div class="row-fluid">
-        <div class="span2" id="sidebar"> 
-          
-          <%- partial('fragments/sidenav') %>
-          
-        </div><!--/span-->
-        <div class="span10">
-          <div class="hero-unit" id="headline">
-            <h1>Règles de modules</h1>
-	        </div>
-	        
+    <div id="container" class="container">
+       
 	        <div class="page ifttt">
 	          <h2>If This Then That</h2>
 	          <p>
@@ -47,6 +35,7 @@
 	            La mécanique de règles permet de surcharger ce comportement en chaînant d'autres actions à la place de la vocalisation.  Les règles sont exécutée dans l'ordre présenté.
 	          </p>
 	          <form method="POST" action="/rules">
+	          <p>&nbsp;</p>
 	          <h3>Par défaut</h3>
             <div class="row-fluid rule">
               <div class="span1"><i>If</i></div>
@@ -79,6 +68,7 @@
               <div class="span3 glyph"><img src="images/speak.png" alt="vocaliser" /> <i>Speak</i></div> 
             </div>
             
+            <p>&nbsp;</p>
             <h3>Filtres</h3>
             <p>
               Les filtres sont executés sur tous les plugins comme des règles de manière à pouvoir effectuer des actions transverses.
@@ -99,6 +89,7 @@
             </div>
             <% } %>
             
+            <p>&nbsp;</p>
             <h3>Modules</h3>
             <p>
               Un objet JSON <code>options</code> est passé d'un script à l'autre. 
@@ -122,8 +113,6 @@
             </p> 
             </form>
           </div>
-        </div><!--/span-->
-      </div><!--/row-->
 
     </div><!--/.fluid-container-->
     <%- partial('fragments/footer') %>

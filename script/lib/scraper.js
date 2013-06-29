@@ -1,3 +1,5 @@
+var winston = require('winston');
+
 // ------------------------------------------
 //  EVALUATE
 // ------------------------------------------
@@ -47,7 +49,7 @@ var scraper = {
       
       // Check for page load success
       if (status !== "success") {
-        console.log(JSON.stringify(results));
+        winston.log('info',JSON.stringify(results));
         //phantom.exit();
         return;
       }
@@ -56,7 +58,7 @@ var scraper = {
       
       // Load jQuery
       if (!page.injectJs(jquery)){
-        console.log(JSON.stringify(results));
+        winston.log('info',JSON.stringify(results));
         //phantom.exit();
         return;
       }

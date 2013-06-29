@@ -1,3 +1,4 @@
+var winston = require('winston');
 
 // ------------------------------------------
 //  RUN
@@ -15,7 +16,11 @@ var exists = function(cmd){
   return false;
 }
 
-var run = function(cmd, options, res){
+var call = function(cmd, data, callback){ 
+  run(cmd, data, false, callback || (function(){}));
+}
+
+var run = function(cmd, options, res, callback){
   var config = SARAH.ConfigManager.getConfig();
   var xtend  = require('../lib/extend.js');
   
@@ -29,14 +34,18 @@ var run = function(cmd, options, res){
   
   // Run modules script
   if (config.modules[cmd] || cmd == 'time'){
-    SARAH.ScriptManager.run(cmd, options, res);
+    SARAH.ScriptManager.run(cmd, options, res, callback);
     return;
-  } 
+  }
   
   // Run phantoms script
   if (config.phantoms[cmd]) {
-    SARAH.PhantomManager.run(cmd, options, res);
+    SARAH.PhantomManager.run(cmd, options, res, callback);
+    return;
   }
+  
+  winston.log('warn', 'Module not found: '+ cmd);
+  if (res){ res.end(); }
 }
 
 var last = function(res){
@@ -73,21 +82,21 @@ var dispatch = function(cmd, options, res){
 
 var callback = function (err, response, body){
   if (err || response.statusCode != 200) {
-    console.log("HTTP Error: ", err, response, body);
+    winston.info("HTTP Error: ", err, response, body);
     return;
   }
 };
 
-var remote = function(qs){
+var remote = function(qs, cb){
   var url = SARAH.ConfigManager.getConfig().http.remote;
   var request = require('request');
-  console.log('Remote: ', url, qs);
-  request({ 'uri' : url, 'qs'  : qs }, callback);
+  winston.info('Remote: ', url, qs);
+  request({ 'uri' : url, 'qs'  : qs }, cb || callback);
 };
 
 var _key = function(key, action, mod) {
   if (!key){ return;}
-  console.log("Key:", action, key, mod);
+  winston.info("Key:", action, key, mod);
   var param = { 'keyMod' : mod };
   param[action] = key;
   remote(param);
@@ -97,21 +106,28 @@ var _key = function(key, action, mod) {
 //  FEATURES
 // ------------------------------------------
 
-var speak = function(tts) {
+var speak = function(tts, cb) {
   if (!tts){ return;}
-  console.log("Say remote: " + tts);
-  remote({ 'tts' : tts });
+  winston.info("Speak remote: " + tts);
+  var qs = { 'tts' : tts }; 
+  if (cb) qs.sync = true;
+  remote(qs, cb);
+};
+
+var shutUp = function() {
+  winston.info("ShutUp remote");
+  remote({ 'notts' : 'true' });
 };
 
 var play = function(mp3) {
   if (!mp3){ return;}
-  console.log("Play remote: " + mp3);
+  winston.info("Play remote: " + mp3);
   remote({ 'play' : mp3 });
 };
 
 var pause = function(mp3) {
   if (!mp3){ return;}
-  console.log("Pause remote: " + mp3);
+  winston.info("Pause remote: " + mp3);
   remote({ 'pause' : mp3 });
 };
   
@@ -123,31 +139,33 @@ var script = function(uri){
 
 var face = function(action) {
   if (!action){ return;}
-  console.log("Face Recognition: " + action);
+  winston.info("Face Recognition: " + action);
   remote({ 'face' : action });
 };
 
 var gesture = function(action) {
   if (!action){ return;}
-  console.log("Gesture Recognition: " + action);
+  winston.info("Gesture Recognition: " + action);
   remote({ 'gesture' : action });
 };
 
 var keyText = function(text) {
   if (!text){ return;}
-  console.log("KeyText:", text);
+  winston.info("KeyText:", text);
   remote({ 'keyText' : text });
 };
 
-var runApp = function(app) {
+var runApp = function(app, params) {
   if (!app){ return;}
-  console.log("Run:", app);
-  remote({ 'run' : app });
+  winston.info("Run:", app);
+  var qs = { 'run' : app }
+  if (params) { qs.runp = params; }
+  remote(qs);
 }
 
 var activate = function(app) {
   if (!app){ return;}
-  console.log("Activate:", app);
+  winston.info("Activate:", app);
   remote({ 'activate' : app });
 }
 
@@ -161,7 +179,10 @@ var render = function(path, options){
   var path = __dirname + '/../../' + path;
   if (!fs.existsSync(path)){ return "<h4>File not found: "+path+"</h4>"; }
   var text = fs.readFileSync(path, 'utf8');
+  
   var options = options || { 'SARAH' : SARAH };
+  options.SARAH = SARAH;
+  
   return ejs.render(text, options);
 };
 
@@ -171,8 +192,8 @@ var render = function(path, options){
 // ------------------------------------------
 
 var SARAH = {
-  'init': function(){
-  
+  'init': function(){   
+    
     SARAH.ConfigManager  = require('./config.js').init(SARAH);
     SARAH.PluginManager  = require('./plugin.js').init(SARAH);
     SARAH.RuleManager    = require('./rules.js').init(SARAH);
@@ -220,7 +241,8 @@ var SARAH = {
   'script': script,
   
   // Run local module
-  'run': run,
+  'run' : run,
+  'call': call,
   
   // Run last runned module
   'last': last,

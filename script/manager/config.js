@@ -1,5 +1,8 @@
 var fs = require('fs');
 var xtend = require('../lib/extend.js');
+var winston = require('winston');
+var pwd = require('path');
+
 // ------------------------------------------
 //  REQUIRE - HELPER
 // ------------------------------------------
@@ -66,11 +69,11 @@ var loadPlugins = function(folder, conf){
     
     // Ends with .prop
     if (file.endsWith('.prop')){
-      console.log('Loading plugin properties %s ...', path);
+      winston.log('info', 'Loading plugin properties %s ...', path);
       try {
         var json   =  fs.readFileSync(path,'utf8');
         var plugin = JSON.parse(json);
-      } catch(ex){ console.log(ex); }
+      } catch(ex){ winston.warn(ex); }
       xtend.extend(true, conf, plugin);
     }
   });
@@ -81,11 +84,11 @@ var getJSON = function(name){
   var path = 'plugins/'+name+'/'+name+'.prop';
   if (!fs.existsSync(path)){ return {}; }
   
-  console.log('Loading plugin properties %s ...', path);
+  //winston.log('info', 'Loading plugin properties %s ...', path);
   try {
     var json = fs.readFileSync(path,'utf8');
     return JSON.parse(json);
-  } catch(ex){ console.log(ex); }
+  } catch(ex){ winston.warn(ex); }
 }
 
 /**
@@ -93,7 +96,7 @@ var getJSON = function(name){
  */
 var loadProperties = function(){
   if (!fs.existsSync('script/wsrnode.prop')) { return {}; }
-  console.log('Loading core properties...');
+  winston.info('Loading core properties...');
   var json = fs.readFileSync('script/wsrnode.prop','utf8');
   return JSON.parse(json);
 }
@@ -103,11 +106,32 @@ var loadProperties = function(){
  */
 var loadCustoms = function(){
   if (!fs.existsSync('custom.prop')) { return {}; }
-  console.log('Loading custom properties...');
+  winston.info('Loading custom properties...');
   var json = fs.readFileSync('custom.prop','utf8');
   var parse = {};
-  try { parse = JSON.parse(json); } catch (ex){ console.log(ex.message); }
-  return parse
+  try { parse = JSON.parse(json); } catch (ex){ winston.error(ex.message); }
+  
+  parse['modules']  = retains(parse['modules'],  config['modules']);
+  parse['phantoms'] = retains(parse['phantoms'], config['phantoms']);
+  parse['cron']     = retains(parse['cron'],     config['cron']);
+
+  return parse;
+}
+
+var retains = function(source, target){
+  if (typeof source != 'object') return source;
+  
+  var clean  = {};
+  Object.keys(source).forEach(function(attr){
+    if (attr == 'description' || attr == 'version'){ return false; }
+    if (target[attr] === undefined
+        && attr != 'x' && attr != 'y' 
+        && attr != 'w' && attr != 'h'
+        && attr != 'c'){ return winston.log('warn', 'Bypass config: ', attr); }
+    clean[attr] = retains(source[attr], target[attr]);
+  });
+  
+  return clean;
 }
 
 // ------------------------------------------
@@ -121,9 +145,9 @@ var saveProperties = function(cfg) {
 
     //json = json.replace(/\{/g,"{\n  ").replace(/\}/g,"\n  }").replace(/,/g,",\n  ");
     fs.writeFileSync('custom.prop', json, 'utf8');
-    console.log('Properties saved successfully');
+    winston.info('Properties saved successfully');
   } catch(ex) {
-    console.log('Error while saving properties:', ex.message);
+    winston.log('error', 'Error while saving properties:', ex.message);
   }
 }
 
@@ -133,6 +157,15 @@ var saveProperties = function(cfg) {
 
 var routes = function(req, res, next){
 
+  var json = req.body.json;
+  if (json){
+    json = JSON.parse(json);
+    xtend.extend(true, config, json);
+    ConfigManager.save(config);
+    res.redirect('/home');
+    return; 
+  }
+  
   var key = req.body.key;
   if (!key){ res.redirect('/home');  return; }
 
@@ -141,7 +174,7 @@ var routes = function(req, res, next){
   
   Object.keys(req.body).forEach(function(attr){
     if (attr == 'key') { return; }
-    console.log(key+'.'+attr+' => '+req.body[attr]);
+    winston.info(key+'.'+attr+' => '+req.body[attr]);
     cnf[attr] = req.body[attr];
   });
 
@@ -156,19 +189,50 @@ var routes = function(req, res, next){
 
 var getModule = function(name, uncache){
   var module = false;
+  var path = false;
+
   try {
-    var path = '../../plugins/'+name+'/'+name+'.js';
+    path = pwd.normalize(__dirname+'/../../plugins/'+name+'/'+name+'.js');
     if (config.debug || uncache){ require.uncache(path); }
-    module = require(path); 
+    module = require(path);  
   } 
   catch (ex) { 
     try { 
-      var path = '../'+name+'.js';
+      path = pwd.normalize(__dirname+'/../'+name+'.js');
       if (config.debug || uncache){ require.uncache(path); } 
       module = require(path); 
     } catch (ex) { }
   }
+  
+  initModule(module, name); 
+  if (!module){ return false;  }
+  if (uncache){ return module; }
+  
+  // Force reload if file change
+  
+  var modified = fs.statSync(path).mtime.getTime();
+  if (!module.lastModified){
+    module.lastModified = modified;
+  } 
+  else if (module.lastModified < modified){
+    winston.log('info', 'Reloading '+name);
+    return getModule(name, true);
+  }
+  
   return module;
+}
+
+var initModule = function(module, name){
+  try {
+    if (!module) { return; }
+    
+    if (module.initialized){ return; }
+    module.initialized = true;
+     
+    winston.log('info','initModule: ', name);
+    if (!module.init){ return; }
+    module.init(SARAH);
+  } catch (ex) { winston.log('warn','initModule: ' + ex.message); }
 }
 
 // ------------------------------------------
@@ -180,7 +244,7 @@ var getTicker = function(){
   var url = 'https://dl.dropbox.com/u/255810/Encausse.net/Sarah/plugins/ticker.json';
   var request = require('request');
   request({ 'uri' : url, json : true }, function (err, response, json){
-    if (err || response.statusCode != 200) { console.log("Can't retrieve remote ticker");  return; }
+    if (err || response.statusCode != 200) { winston.info("Can't retrieve remote ticker");  return; }
     ticker = json.message; // delayed by 1 request
   });
   return ticker;
@@ -208,7 +272,7 @@ var ConfigManager = {
       xtend.extend(true, config, loadPlugins());
       xtend.extend(true, config, loadCustoms());
     } 
-    catch(ex) { console.log('Error while loding properties:', ex.message);  }
+    catch(ex) { winston.log('error', 'Error while loding properties:', ex.message);  }
     return ConfigManager;
   },
   

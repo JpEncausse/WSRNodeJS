@@ -1,3 +1,5 @@
+var winston = require('winston');
+
 // ------------------------------------------
 //  ROUTES  RULES
 // ------------------------------------------
@@ -18,7 +20,7 @@ var saveRules = function(req, res, next){
   _disabled = (typeof _disabled === 'string') ? [_disabled] : _disabled;
   
   if (_if.length != _then.length ||  _then.length != _script.length){
-    console.log('Wrong IFTTT parameters', _if, _then, _script, _disabled);
+    winston.log('info','Wrong IFTTT parameters', _if, _then, _script, _disabled);
     res.redirect('/rules');
     return;
   }
@@ -46,7 +48,6 @@ var dispatch = function(cmd, options){
   iterate('before',    options);
   var r = iterate(cmd, options);
   iterate('after',     options);
-  
   return r;
 }
 
@@ -64,8 +65,9 @@ var iterate = function(cmd, options){
       if (rule['if'] != cmd){ continue; } hasRule = true;
       if (rule['script']){ eval(rule['script']); }
       if (rule['then'] == 'speak'){ speak = true; continue; }
+      if (!rule['then']){ continue; }
       SARAH.run(rule['then'], options);
-    } catch(ex) { console.log('Rule: ',ex); }
+    } catch(ex) { winston.log('warn', 'Rule: ',ex); }
   }
   
   return hasRule && !speak;

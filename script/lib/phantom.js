@@ -2,10 +2,11 @@ var exec  = require('child_process').exec;
 var spawn = require('child_process').spawn;
 var fs    = require('fs');
 var xtend = require('./extend.js');
+var winston = require('winston');
 
 exports.action = function(cmd, data, callback, SARAH){
   
-  console.log('Fetching phantom script %s ...', cmd);
+  winston.log('info', 'Fetching phantom script %s ...', cmd);
   
   // Compute script
   var script = 'script/phantom/'+cmd+'.js';
@@ -32,18 +33,18 @@ exports.action = function(cmd, data, callback, SARAH){
   var soft = config.http.phantom || (__dirname + "/../../PhantomJS/phantomjs.exe");
   var proc = path.normalize(soft);
   
-  console.log("Phantom: ", proc, '--proxy-type=none', script, json); 
+  winston.log('info',"Phantom: ", proc, '--proxy-type=none', script, json); 
   
   var child = spawn(proc, ['--proxy-type=none', script, json]);
   child.stderr.on('data', function (data) { 
-    console.log('Error: ',getBuffer(data));
+    winston.log('warn','Error: ',getBuffer(data));
     callback({'tts' : 'Une erreur est survenue'});
   });
   
   child.stdout.on('data', function (data) { 
     var response = getBuffer(data); 
     var json = JSON.parse(response);
-    console.log('Success: ', response);
+    winston.log('info','Success: ', response);
     
     // Hook perfoming on results
     var module = false;
@@ -52,7 +53,7 @@ exports.action = function(cmd, data, callback, SARAH){
       try { module = require('./'+cmd+'.node.js'); } catch (ex) { }
     }
     if (module){
-      console.log('Running phantom callback %s ...', cmd+'.node');
+      winston.log('info','Running phantom callback %s ...', cmd+'.node');
       options.directory = data.directory;  
       module.after(options, json, SARAH);
     }

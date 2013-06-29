@@ -1,3 +1,4 @@
+var winston = require('winston');
 var cronJob = require('../vendor/cron').CronJob;
 
 // ------------------------------------------
@@ -9,16 +10,16 @@ var cronJob = require('../vendor/cron').CronJob;
  */
 var startJob = function(task, module){
   if (!module){ 
-    console.log('Missing CRON module');
+    winston.warn('Missing CRON module: ', task.name);
     return; 
   }
   
   if (!task.time){
-    console.log("Missing task's name or time properties");
+    winston.warn("Missing task's name or time properties");
     return;
   }
   
-  console.log('Starting CRON Job for %s at %s', task.name, task.time);
+  winston.log('info', 'Starting CRON Job for %s at %s', task.name, task.time);
   
   // Build callback
   var callback = function(options){
@@ -29,7 +30,7 @@ var startJob = function(task, module){
   var job = new cronJob({
     cronTime: task.time,
     onTick: function() {
-      console.log('Cron: %s', task.name);
+      winston.log('info', 'Cron: %s', task.name);
       module.cron(callback, task, SARAH);
     },
     start: true
@@ -49,7 +50,7 @@ var startAll = function(){
   Object.keys(config.cron).forEach(function(key){
     var task = config.cron[key];
     var module = SARAH.ConfigManager.getModule(key);
-    console.log('Starting task %s ...', key);
+    winston.log('info', 'Starting task %s ...', key);
     CRONManager.start(task, module);
   });
 }

@@ -2,28 +2,18 @@
     
     <%- partial('fragments/navbar') %>
     <%- partial('fragments/confirm') %>
+    <%- partial('fragments/headline') %>
 
-    <div id="container" class="container-fluid">
-      <div class="row-fluid">
-        <div class="span2" id="sidebar">
-          
-          <%- partial('fragments/sidenav') %>
-          
-        </div><!--/span-->
-        <div class="span10">
-          <div class="hero-unit" id="headline">
-            <h1>A propos</h1>
-	        </div>
-	        
-	        <div class="page">
+    <div id="container" class="container">
+      <div class="page">
+ 
+         <div class="page">
 	          <h3>Changelogs</h3>
 	          <pre>
 <%= SARAH.render('README/changelog.txt') %>
 	          </pre>
           </div>
 	        
-        </div><!--/span-->
       </div><!--/row-->
-
     </div><!--/.fluid-container-->
     <%- partial('fragments/footer') %>

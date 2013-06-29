@@ -1,3 +1,5 @@
+var winston = require('winston');
+
 // ------------------------------------------
 //  ROUTES  PLUGIN
 // ------------------------------------------
@@ -32,7 +34,7 @@ var AdmZip = require('adm-zip');
 
 var installPlugin = function(name, cb){
   
-  if (fs.existsSync('plugins/'+name)){ console.log("Can't install plugin already installed"); cb(); return;}
+  if (fs.existsSync('plugins/'+name)){ winston.info("Can't install plugin already installed"); cb(); return;}
   if (!fs.existsSync('./tmp')){ fs.mkdirSync('./tmp'); }
   if (fs.existsSync('./tmp/'+name+'.zip')){ fs.unlinkSync('./tmp/'+name+'.zip'); }
 
@@ -40,19 +42,36 @@ var installPlugin = function(name, cb){
   var plugin = PluginManager.remote[name];
   if (plugin && plugin.dl){ path = plugin.dl; }
   
-  console.log('Download plugin: ', name, path);
+  winston.log('info', 'Download plugin: ', name, path);
   var request = require('request');
   request({
       'uri': path,
       'headers': {'user-agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 (KHTML, like Gecko) Chrome/21.0.1180.75 Safari/537.1'}
     }, function (error, response, body) {
     
-    console.log('Unzip plugin: ' + name);
-    fs.mkdirSync('plugins/'+name);
+    winston.log('info', 'Unzip plugin: ', name);
     
+    // Remove previous tmp folder
+    var tmp = 'tmp/'+name;
+    if (fs.existsSync(tmp)){
+      try { fs.unlinkSync(tmp); } catch (ex){  }
+    }
+    
+    // Unzip all to tmp folder
     var zip = new AdmZip('tmp/'+name+'.zip');
-    zip.extractAllTo('plugins/'+name, false);
+    zip.extractAllTo(tmp, false);
     
+    // Check content
+    var files = fs.readdirSync(tmp);
+    if (!files){ cb(); }
+    
+    // If it is a folder get it's content
+    var isFolder = files.length == 1 && fs.statSync(tmp+'/'+files[0]).isDirectory();
+    if (isFolder){
+      try { fs.renameSync(tmp+'/'+files[0], 'plugins/'+name); } catch (ex){  }
+    } else {
+      try { fs.renameSync(tmp, 'plugins/'+name); } catch (ex){  }
+    } 
     cb();
     
   }).pipe(fs.createWriteStream('tmp/'+name+'.zip'))
@@ -65,7 +84,7 @@ var installPlugin = function(name, cb){
 var removePlugin = function(name, cb){
   var path = 'plugins/'+name;
   if (!fs.existsSync(path)){ cb(); return; }
-  console.log('Delete plugin: ' + path);
+  winston.log('info', 'Delete plugin: ', path);
   rmdirSyncRecursive(path);
   cb();
 }
@@ -142,7 +161,7 @@ var  getRemotePlugins = function(){
   request({ 'uri' : url, json : true }, function (err, response, json){
     
     if (err || response.statusCode != 200) {
-      console.log("Can't retrieve remote plugins");
+      winston.info("Can't retrieve remote plugins");
       return;
     }
 
@@ -171,7 +190,8 @@ var  getLocalPlugins = function(){
       'tags'       : rmot ? rmot.tags : '',
       'description': conf ? conf.description : (rmot ? rmot.description : ''),
       'installed'  : true,
-      'remote'     : rmot ? true : false
+      'remote'     : rmot ? true : false,
+      'dl'         : rmot ? rmot.dl : ''
     };
   }
   return plugins;
@@ -197,7 +217,8 @@ var getAllPlugins = function(){
       'tags'       : rmot ? rmot.tags : '',
       'description': rmot ? rmot.description : '',
       'installed'  : false,
-      'remote'     : true
+      'remote'     : true,
+      'dl'         : rmot ? rmot.dl : ''
     }
   }
   
@@ -224,6 +245,7 @@ var render = function(path, options){
  * Displays generic plugin page
  */
 var display = function(req, res, next){
+
   var rgxplugin = /\/plugins\/(\w+)\/*/g;
   var plugin = rgxplugin.exec(req.path);
   if (!plugin || plugin.length != 2){ res.send(404); return; }
@@ -237,8 +259,9 @@ var display = function(req, res, next){
 /**
  * Check if plugin have index.html
  */
-var hasWebPage = function(name){
-  path = webpath + '/' + name + "/index.html";
+var hasWebPage = function(name, file){
+  var file = file || 'index.html';
+  path = webpath + '/' + name + '/' + file;
   return fs.existsSync(path);
 }
 
@@ -289,6 +312,7 @@ var PluginManager = {
   
   // Routes webapp to plugins
   'display' : display,
+  'render'  : render,
   
   // Routes webapp to store
   'routes' : routes,

@@ -1,6 +1,8 @@
 var fs = require("fs"),
     pth = require('path');
 
+fs.existsSync = fs.existsSync || pth.existsSync;
+	
 module.exports = (function() {
 
     var crcTable = [],
@@ -77,7 +79,7 @@ module.exports = (function() {
                 case Constants.STORED:
                     return 'STORED (' + method + ')';
                 case Constants.DEFLATED:
-                    return 'DEFATED (' + method + ')';
+                    return 'DEFLATED (' + method + ')';
                 default:
                     return 'UNSUPPORTED (' + method + ')'
             }
@@ -85,7 +87,7 @@ module.exports = (function() {
         },
 
         writeFileTo : function(/*String*/path, /*Buffer*/content, /*Boolean*/overwrite, /*Number*/attr) {
-            if (pth.existsSync(path)) {
+            if (fs.existsSync(path)) {
                 if (!overwrite)
                     return false; // cannot overwite
 
@@ -95,7 +97,7 @@ module.exports = (function() {
                 }
             }
             var folder = pth.dirname(path);
-            if (!pth.existsSync(folder)) {
+            if (!fs.existsSync(folder)) {
                 mkdirSync(folder);
             }
 
@@ -124,6 +126,17 @@ module.exports = (function() {
 
         setAttributes : function(/*String*/path) {
 
+        },
+
+        toBuffer : function(input) {
+            if (Buffer.isBuffer(input)) {
+                return input;
+            } else {
+                if (input.length == 0) {
+                    return new Buffer(0)
+                }
+                return new Buffer(input, 'utf8');
+            }
         },
 
         Constants : Constants,

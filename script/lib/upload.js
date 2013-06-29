@@ -1,4 +1,4 @@
-
+var winston = require('winston');
 exports.action = function(req, res, config){
   
   res.writeHead(200, {'content-type': 'text/plain'});
@@ -17,7 +17,7 @@ exports.action = function(req, res, config){
     path   = req.files.file.path;
   }
   
-  console.log('Upload ' + path + ' to ' + upload+name);
+  winston.log('info','Upload ' + path + ' to ' + upload+name);
     
   var fs   = require('fs');
   var util = require('util');

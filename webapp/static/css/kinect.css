@@ -32,7 +32,7 @@
 #image {
   bottom:   0px;
   right:    0px;
-  -webkit-filter: opacity(0.9) sepia(0.6) hue-rotate(-20deg) contrast(100%) brightness(10%);
+  -webkit-filter: opacity(0.9) ;
 }
 
 /*

@@ -1,0 +1,81 @@
+<% if (modules){ %>
+  <%   
+    var keys = Object.keys(modules);
+    keys = keys.sort(function(k1, k2){
+      var m1 = modules[k1];
+      var m2 = modules[k2];
+      
+      if (!m1.y) return  1;
+      if (!m2.y) return -1;
+      
+      var y = m2.y - m1.y;
+      var x = m2.x - m1.x;
+        
+      return  y != 0 ? y : (x != 0 ? x : -1)
+    });
+  %>
+  <% var i = 0; var manager = SARAH.PluginManager; %>
+  <% keys.forEach(function(key){
+  
+     var module = modules[key];
+     var custom = manager.hasWebPage(key, 'portlet.html');
+     var flip   = manager.hasWebPage(key, 'portlet_back.html');  
+  %>
+  <li class='gridster-item' data-key="<%= type %>.<%= key %>" data-row="<%- module['y'] || 2 %>" data-col="<%- module['x'] || 1 %>" data-sizex="<%- module['w'] || 1 %>" data-sizey="<%- module['h'] || 1 %>">
+
+        <div class="plugin-gridster <%= custom ? '' : 'default' %> <%= module['c'] || '' %> <%= key %> <%= flip ? 'flip-container' : '' %>">
+          <div class="flipper">
+            <div class="plugin-body">
+              <div class="front">
+                <% if (flip) { %><a href="#" class="flip"><i class='icon-refresh'></i></a><% } %>
+                <div class="flip-body">
+                
+                      <% if (custom){ %>
+                      
+                        <%- manager.render(key+'/portlet.html', { 
+                          'type'       : type, 
+                          'key'        : key, 
+                          'module'     : module, 
+                          'partial'    : partial,
+                          'stylesheet' : stylesheet,
+                          'script'     : script
+                        }) %>
+                      
+                      <%  } else { %>
+                      
+                              <h3><%= key %> </h3><a name="<%= key %>"></a>
+                              <p class="overflow"><%= module.description %></p>
+                              
+                            <% } %>
+                </div>
+                <% if (!flip){ %>
+                <%- partial('fragments/module-footer', { 'type' : type, 'key' : key, 'module' : module }) %>
+                <% } %>
+              </div>
+              
+              <% if (flip){ %>
+              
+              <div class="back">
+                <a href="#" class="flip"><i class='icon-refresh'></i></a>
+                <div class="flip-body">
+                <%- manager.render(key+'/portlet_back.html', { 
+                  'type'       : type, 
+                  'key'        : key, 
+                  'module'     : module, 
+                  'partial'    : partial,
+                  'stylesheet' : stylesheet,
+                  'script'     : script
+                }) %>
+                </div>
+                <%- partial('fragments/module-footer', { 'type' : type, 'key' : key, 'module' : module }) %>
+              </div>
+              
+              <% } %>
+            </div>
+          </div>
+        </div>
+    
+  </li>
+  
+  <% }) %>
+<% } %>
