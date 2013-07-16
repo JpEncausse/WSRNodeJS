@@ -73,7 +73,7 @@ var loadPlugins = function(folder, conf){
       try {
         var json   =  fs.readFileSync(path,'utf8');
         var plugin = JSON.parse(json);
-      } catch(ex){ winston.warn(ex); }
+      } catch(ex){ winston.warn(ex.message); }
       xtend.extend(true, conf, plugin);
     }
   });
@@ -88,7 +88,7 @@ var getJSON = function(name){
   try {
     var json = fs.readFileSync(path,'utf8');
     return JSON.parse(json);
-  } catch(ex){ winston.warn(ex); }
+  } catch(ex){ winston.warn(ex.message); }
 }
 
 /**

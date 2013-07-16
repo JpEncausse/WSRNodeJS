@@ -29,7 +29,8 @@ README/SayStatic/
 README/ScanSoftTTS/
 README/changelog.txt
 plugins/
-
+script/wsrnode.log
+NodeJSOLD/
 
 # External tool builders
 .externalToolBuilders/

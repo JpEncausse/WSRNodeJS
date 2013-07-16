@@ -1,5 +1,3 @@
-var winston = require('winston');
-
 // ------------------------------------------
 //  EVALUATE
 // ------------------------------------------
@@ -49,7 +47,7 @@ var scraper = {
       
       // Check for page load success
       if (status !== "success") {
-        winston.log('info',JSON.stringify(results));
+        console.log('info',JSON.stringify(results));
         //phantom.exit();
         return;
       }
@@ -58,8 +56,8 @@ var scraper = {
       
       // Load jQuery
       if (!page.injectJs(jquery)){
-        winston.log('info',JSON.stringify(results));
-        //phantom.exit();
+        console.log('info',JSON.stringify(results));
+        phantom.exit();
         return;
       }
       
@@ -72,7 +70,7 @@ var scraper = {
       
       // Write answer back
       console.log(JSON.stringify(results));
-      //phantom.exit();
+      phantom.exit();
     });
   }
 }

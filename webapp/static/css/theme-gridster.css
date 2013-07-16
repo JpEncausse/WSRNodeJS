@@ -65,6 +65,8 @@
   -webkit-transform: rotateY(180deg);
 }
 
+.ie .flip-container.hover .flipper .front{ display: none; }
+
 /* flip speed goes here */
 .flipper {
           transition: 0.6s;

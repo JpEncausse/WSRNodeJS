@@ -27,9 +27,9 @@
 	  <% if (attr == 'version')     return; %>
 	  <% if (attr == 'x' || attr == 'y' || attr == 'w' || attr == 'h' || attr == 'c') return; %>
 	  <div class="control-group">
-	    <label class="control-label" for="#<%= key %>_<%= attr %>"><%= attr %></label>
+	    <label class="control-label"><%= attr %></label>
 	    <div class="controls">
-	      <input type="text" id="<%= key %>_<%= attr %>" name="<%= attr %>" value="<%= value %>" placeholder="Saisir la valeur...">
+	      <input type="text" name="<%= attr %>" value="<%= value %>" placeholder="Saisir la valeur...">
 	    </div>
 	  </div>
 	  <% }); %>
@@ -37,20 +37,20 @@
 	  <fieldset>
 	    <legend>Grille: </legend>
       
-      <label class="control-label tiny" for="#<%= key %>_c">
-      <select  id="<%= key %>_c" name="c" value="<%= module['c'] || 1 %>" class="span1">
-        <option value="default">default</option>
-        <option value="orange">orange</option>
-        <option value="green">green</option>
-        <option value="yellow">yellow</option>
-        <option value="brown">brown</option>
-        <option value="pink">pink</option>
+      <label class="control-label tiny">
+      <select  name="c" class="span1">
+        <option value="default" <%= module['c'] == 'default' ? 'selected' : '' %>>default</option>
+        <option value="orange"  <%= module['c'] == 'orange'  ? 'selected' : '' %>>orange</option>
+        <option value="green"   <%= module['c'] == 'green'   ? 'selected' : '' %>>green</option>
+        <option value="yellow"  <%= module['c'] == 'yellow'  ? 'selected' : '' %>>yellow</option>
+        <option value="brown"   <%= module['c'] == 'brown'   ? 'selected' : '' %>>brown</option>
+        <option value="pink"    <%= module['c'] == 'pink'    ? 'selected' : '' %>>pink</option>
       </select>
       </label>
       
 	  <% ['x','y','w','h'].forEach(function(attr){ %>
-	    <label class="control-label tiny" for="#<%= key %>_<%= attr %>"><%= attr %>
-	    <input type="text" id="<%= key %>_<%= attr %>" name="<%= attr %>" value="<%= module[attr] || 1 %>" class="span1" placeholder="Saisir la valeur...">
+	    <label class="control-label tiny"><%= attr %>
+	    <input type="text" name="<%= attr %>" value="<%= module[attr] || 1 %>" class="span1" placeholder="Saisir la valeur...">
 	    </label>
 	  <% }); %>
 	  </fieldset>
@@ -67,7 +67,7 @@
     <input type="hidden" name="version" value="<%= v %>"/>
     <% } %>
     <a href="#" class="btn" data-dismiss="modal">Fermer</a>
-    <button type="submit" class="btn btn-primary">Enregistrer</a>
+    <input type="submit" class="btn btn-primary" value="Enregistrer" />
   </div>
   </form>
 </div> 

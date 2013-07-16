@@ -68,7 +68,12 @@ var installPlugin = function(name, cb){
     // If it is a folder get it's content
     var isFolder = files.length == 1 && fs.statSync(tmp+'/'+files[0]).isDirectory();
     if (isFolder){
-      try { fs.renameSync(tmp+'/'+files[0], 'plugins/'+name); } catch (ex){  }
+      // try { fs.renameSync(tmp+'/'+files[0], 'plugins/'+name); } catch (ex){  }
+      var ncp = require('ncp').ncp;
+      ncp(tmp+'/'+files[0], 'plugins/'+name, function (err) {
+        if (err) { winston.log('error', err); }
+      });
+      
     } else {
       try { fs.renameSync(tmp, 'plugins/'+name); } catch (ex){  }
     } 
