@@ -34,7 +34,7 @@ var AdmZip = require('adm-zip');
 
 var installPlugin = function(name, cb){
   
-  if (fs.existsSync('plugins/'+name)){ winston.info("Can't install plugin already installed"); cb(); return;}
+  if (fs.existsSync('plugins/'+name)){ winston.info("[Plugin] Can't install plugin already installed"); cb(); return;}
   if (!fs.existsSync('./tmp')){ fs.mkdirSync('./tmp'); }
   if (fs.existsSync('./tmp/'+name+'.zip')){ fs.unlinkSync('./tmp/'+name+'.zip'); }
 
@@ -42,32 +42,40 @@ var installPlugin = function(name, cb){
   var plugin = PluginManager.remote[name];
   if (plugin && plugin.dl){ path = plugin.dl; }
   
-  winston.log('info', 'Download plugin: ', name, path);
+  winston.log('info', '[Plugin] Download plugin: ', name, path);
   var request = require('request');
   request({
       'uri': path,
       'headers': {'user-agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 (KHTML, like Gecko) Chrome/21.0.1180.75 Safari/537.1'}
     }, function (error, response, body) {
     
-    winston.log('info', 'Unzip plugin: ', name);
+    if (error || response.statusCode != 200) {
+      winston.log('error', "[Plugin] Can't download plugin");
+      cb(); return;
+    }
     
     // Remove previous tmp folder
+    winston.log('info', '[Plugin] Clean tmp: ', name);
     var tmp = 'tmp/'+name;
     if (fs.existsSync(tmp)){
       try { fs.unlinkSync(tmp); } catch (ex){  }
     }
     
     // Unzip all to tmp folder
+    winston.log('info', '[Plugin] Unzip plugin: ', name);
     var zip = new AdmZip('tmp/'+name+'.zip');
-    zip.extractAllTo(tmp, false);
+    zip.extractAllTo(tmp, true);
     
     // Check content
+    winston.log('info', '[Plugin] Check content: ', name);
     var files = fs.readdirSync(tmp);
     if (!files){ cb(); }
     
     // If it is a folder get it's content
+    
     var isFolder = files.length == 1 && fs.statSync(tmp+'/'+files[0]).isDirectory();
     if (isFolder){
+      winston.log('info', '[Plugin] Is a folder, copy files', name);
       // try { fs.renameSync(tmp+'/'+files[0], 'plugins/'+name); } catch (ex){  }
       var ncp = require('ncp').ncp;
       ncp(tmp+'/'+files[0], 'plugins/'+name, function (err) {
@@ -75,6 +83,7 @@ var installPlugin = function(name, cb){
       });
       
     } else {
+      winston.log('info', '[Plugin] Not a folder, rename sync', name);
       try { fs.renameSync(tmp, 'plugins/'+name); } catch (ex){  }
     } 
     cb();
@@ -89,7 +98,7 @@ var installPlugin = function(name, cb){
 var removePlugin = function(name, cb){
   var path = 'plugins/'+name;
   if (!fs.existsSync(path)){ cb(); return; }
-  winston.log('info', 'Delete plugin: ', path);
+  winston.log('info', '[Plugin] Delete plugin: ', path);
   rmdirSyncRecursive(path);
   cb();
 }
@@ -161,12 +170,15 @@ var saveFile = function(name, file, content){
  * Retrive remote plugins information from main server
  */
 var  getRemotePlugins = function(){
-  var url = 'https://dl.dropbox.com/u/255810/Encausse.net/Sarah/plugins/plugins.json';
+  var url = 'http://plugins.sarah.encausse.net';
   var request = require('request');
-  request({ 'uri' : url, json : true }, function (err, response, json){
+  request({ 
+    'uri' : url, json : true,
+    'headers': {'user-agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 (KHTML, like Gecko) Chrome/21.0.1180.75 Safari/537.1'} 
+  }, function (err, response, json){
     
     if (err || response.statusCode != 200) {
-      winston.info("Can't retrieve remote plugins");
+      winston.info("[Plugin] Can't retrieve remote plugins");
       return;
     }
 

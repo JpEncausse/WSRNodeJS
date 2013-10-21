@@ -23,7 +23,6 @@ process.on('uncaughtException', function (err) {
   winston.log('error','Caught exception: '+err);
 });
 
-
 // ==========================================
 //  SARAH MANAGER
 // ==========================================
@@ -68,12 +67,16 @@ app.get('/home',    routes.home);
 app.get('/kinect',  routes.kinect);
 app.get('/about',   routes.about);
 app.get('/badge',   routes.badge);
+app.get('/plugin',  routes.plugin);
 
 // Link app
 SARAH.express = { 
   'app' : app,
   'server' : server
 };
+
+// Context
+app.post('/profiles', SARAH.routes);
 
 // ==========================================
 //  LOAD CONFIGURATION

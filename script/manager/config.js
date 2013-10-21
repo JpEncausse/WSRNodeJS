@@ -206,15 +206,15 @@ var getModule = function(name, uncache){
   
   initModule(module, name); 
   if (!module){ return false;  }
-  if (uncache){ return module; }
-  
-  // Force reload if file change
   
   var modified = fs.statSync(path).mtime.getTime();
   if (!module.lastModified){
     module.lastModified = modified;
-  } 
-  else if (module.lastModified < modified){
+  }
+  
+  if (uncache){ return module; }
+  
+  if (module.lastModified < modified){
     winston.log('info', 'Reloading '+name);
     return getModule(name, true);
   }
@@ -241,9 +241,12 @@ var initModule = function(module, name){
 
 var ticker = '&nbsp;';
 var getTicker = function(){
-  var url = 'https://dl.dropbox.com/u/255810/Encausse.net/Sarah/plugins/ticker.json';
+  var url = 'http://ticker.sarah.encausse.net';
   var request = require('request');
-  request({ 'uri' : url, json : true }, function (err, response, json){
+  request({ 
+    'uri' : url, 'json' : true,
+    'headers': {'user-agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 (KHTML, like Gecko) Chrome/21.0.1180.75 Safari/537.1'} 
+  }, function (err, response, json){
     if (err || response.statusCode != 200) { winston.info("Can't retrieve remote ticker");  return; }
     ticker = json.message; // delayed by 1 request
   });

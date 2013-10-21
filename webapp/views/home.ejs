@@ -1,142 +1,122 @@
 <% layout('layouts/layout') %>
-<% var config = SARAH.ConfigManager.getConfig();  %>   
-     
-<%- partial('fragments/navbar') %>
-<div id="container" class="container-fluid">
-  
-  <%- partial('fragments/headline') %>
-  
-  
-  <!-- Modules -->
-  <div class="page page-gridster">
-    <div class="gridster">
-      <ul>
-      
-        <li class='gridster-item' data-row="1" data-col="1" data-sizex="2" data-sizey="2">
-          <div class="plugin-gridster info">
-            <div class="plugin-body"><div class="front"><div class="flip-body">
-          
-	          <h2><img src="images/puzzle-white.png" style="margin-right: 10px;" /> Modules</h2>
-	          <div class="overflow">
-		        <p><%= config.bot.name %> est capable d'exécuter différentes tâches décrites par des scripts.</p>
-		        <p>Les requêtes HTTP envoyées à l'adresse <code>http://ip:port/sarah/script</code> entrainent l'execution du script du même nom situé dans le répertoire <code>/plugin</code></p>
-	          </div>
-		       
-	        </div></div></div>
-	      </div>
-        </li>
-        <%- partial('fragments/module-gridster', {'type' : 'modules',  'modules' : config.modules }) %>
-      
-      </ul>
-    </div>
-  </div>
+<% var config = SARAH.ConfigManager.getConfig();  %>
 
-  <!-- Core -->
-  <div class="page page-gridster">
-    <div class="gridster">
-      <ul>
-      
-        <li class='gridster-item' data-row="1" data-col="1" data-sizex="2" data-sizey="2">
-          <div class="plugin-gridster default brown">
-            <div class="plugin-body"><div class="front"><div class="flip-body">
-          
-              <h3>A propos</h3>
-              <div class="overflow">
-                <p>Ce projet est sous <a href="http://sam.zoy.org/wtfpl/">license WTFPL</a>.</p>
-                <p>Et suis une méthodologie à <a href="http://www.risacher.com/la-rache/index.php?z=2">la rache</a></p>
-                <p>Amusez-vous bien et <a href="https://plus.google.com/u/0/communities/105964514508504667709">partagez avec la communauté</a> !</p>
-                <p align="right">-- <a href="http://www.encausse.net">Jean-Philippe</a></p>
-              </div>
-               
-            </div></div></div>
-          </div>
-        </li>
+<div class="stretch col-md-8 content" id="home">
 
-        <li class='gridster-item' data-row="1" data-col="1" data-sizex="2" data-sizey="2">
-          <div class="plugin-gridster default brown">
-            <div class="plugin-body"><div class="front"><div class="flip-body">
-          
-              <h3>Agent</h3>
-              <div class="overflow">
-                <p>Un des objectifs de <%= config.bot.name %> est de devenir un <a href="http://en.wikipedia.org/wiki/Chatterbot">Chatter Bot</a> avec une forte interraction dans l'habitat.</p>
-                <p>Cette section permet de personnaliser et paramétrer la configuration de l'agent: Nom, description, ...</p>
-              </div>
-              <%- partial('fragments/module-footer', { 'type' : '', 'key' : 'bot', 'module' : config.bot }) %>
+  <div class="tab-content">
+	  <div id="modules" class="tab-pane active">
+			<h1><%= config.bot.name %> : Modules</h1>
+			<div class="gridster-wrapper">
+				<div class="gridster">
+				  <ul>
+				  
+		        <li class='gridster-item' data-row="1" data-col="1" data-sizex="2" data-sizey="2">
+		          <div class="plugin-gridster info">
+		            <div class="plugin-body"><div class="front"><div class="flip-body">
+		          
+		              <h2><img src="images/puzzle-white.png" style="margin-right: 10px;" /> A propos</h2>
+		              <div class="overflow">
+		                <p><%= config.bot.name %> est capable d'exécuter différentes tâches décrites par des scripts.</p>
+		                <p>Les requêtes HTTP envoyées à l'adresse <code>http://ip:port/sarah/script</code> entrainent l'execution du script du même nom situé dans le répertoire <code>/plugin</code></p>
+		              </div>
+		               
+		            </div></div></div>
+		          </div>
+		        </li>
+		        
+            <li class='gridster-item' data-row="1" data-col="1" data-sizex="2" data-sizey="1">
+              <div class="plugin-gridster default brown">
+                <div class="plugin-body"><div class="front"><div class="flip-body">
               
-            </div></div></div>
-          </div>
-        </li>
-        
-        <li class='gridster-item' data-row="1" data-col="1" data-sizex="2" data-sizey="2">
-          <div class="plugin-gridster default brown">
-            <div class="plugin-body"><div class="front"><div class="flip-body">
-          
-              <h3>Serveur NodeJS</h3>
-              <div class="overflow">
-                <p>Le coeur de l'agent est un serveur HTTP qui reçoit des requêtes liées à des commandes vocales mais aussi à d'autres stimulis.</p>
-                <p>Cette section permet de paramétrer le serveur NodeJS.</p>
+                  <h3>A propos</h3>
+                  <div class="overflow" style="height: auto;">
+                    <p>
+                      Ce projet est sous <a href="http://sam.zoy.org/wtfpl/">license WTFPL</a>. 
+                      Et suis une méthodologie à <a href="http://www.risacher.com/la-rache/index.php?z=2">la rache</a>
+                      Amusez-vous bien et <a href="https://plus.google.com/u/0/communities/105964514508504667709">partagez avec la communauté</a> !
+                    </p>
+                    <p align="right">-- <a href="http://www.encausse.net">Jean-Philippe</a></p>
+                  </div>
+                   
+                </div></div></div>
               </div>
-              <%- partial('fragments/module-footer', { 'type' : '', 'key' : 'http', 'module' : config.http }) %>
-              
-            </div></div></div>
-          </div>
-        </li>
-      
-      </ul>
-    </div>
-  </div>
-
-  <!-- Phantom -->
-  <div class="page page-gridster">
-    <div class="gridster">
-      <ul>
-      
-        <li class='gridster-item' data-row="1" data-col="1" data-sizex="2" data-sizey="2">
-          <div class="plugin-gridster info">
-            <div class="plugin-body"><div class="front"><div class="flip-body">
-          
-              <h2><img src="images/phantomjs-white.png" style="margin-right: 10px;" /> Phantoms JS</h2>
-              <div class="overflow">
-                <p><%= config.bot.name %> va chercher une partie de ses connaissances sur Internet. Pour ce faire elle pilote un navigateur web appelé PhantomJS</p>
-                <p>Les requêtes HTTP envoyées à l'adresse <code>http://ip:port/sarah/phantom/script</code> entrainent l'execution du script du même nom situé dans le répertoire <code>/script/phantom</code>.</p>
-              </div>
-               
-            </div></div></div>
-          </div>
-        </li>
-        <%- partial('fragments/module-gridster', {'type' : 'phantoms',  'modules' : config.phantoms }) %>
-      
-      </ul>
-    </div>
-  </div>
-  
-  
-  <!-- CRON -->
-  <div class="page page-gridster">
-    <div class="gridster">
-      <ul>
-      
-        <li class='gridster-item' data-row="1" data-col="1" data-sizex="2" data-sizey="2">
-          <div class="plugin-gridster info">
-            <div class="plugin-body"><div class="front"><div class="flip-body">
-          
-              <h2><img src="images/cron-white.png" style="margin-right: 10px;" /> CRON</h2>
-              <div class="overflow">
-                <p><%= config.bot.name %> est capable d'executer des tâches périodiques. Ces tâches s'appelent des <a href="http://en.wikipedia.org/wiki/Cron">CRON</a>.</p>
-                <p>Les CRON sont des scripts déclarés dans le répertoire <code>/script</code>. La syntaxe est très puissante mais un peu complexe.</p>
-                <p>Le CRON calendar permet de vocaliser du texte à des moments précis. GoogleCalendar devient alors une timeline. Et couplé à des règles <a href="https://ifttt.com/google_calendar">Ifttt</a> ça devient un pont entre la maison et internet.</p>
-              </div>
-               
-            </div></div></div>
-          </div>
-        </li>
-        <%- partial('fragments/module-gridster', {'type' : 'cron',  'modules' : config.cron }) %>
-      
-      </ul>
-    </div>
-  </div>
-  
-   
-</div>
-<%- partial('fragments/editor') %>
-<%- partial('fragments/footer') %>
+            </li>
+		        
+		        <li class='gridster-item' data-row="1" data-col="1" data-sizex="2" data-sizey="1">
+		          <div class="plugin-gridster default brown">
+		            <div class="plugin-body"><div class="front"><div class="flip-body">
+		          
+		              <h3>Serveur NodeJS</h3>
+		              <div class="overflow">
+		                <p>Le coeur de l'agent est un serveur HTTP qui reçoit des requêtes liées à des commandes vocales mais aussi à d'autres stimulis.</p>
+		                <p>Cette section permet de paramétrer le serveur NodeJS.</p>
+		              </div>
+		              <%- partial('fragments/module-footer', { 'type' : '', 'key' : 'http', 'module' : config.http }) %>
+		              
+		            </div></div></div>
+		          </div>
+		        </li>
+		        
+				    <%- partial('fragments/module-gridster', {'type' : 'modules',  'modules' : config.modules }) %>
+				    
+				  </ul>
+				</div>
+			</div>
+		</div>
+		
+		<div id="phantoms" class="tab-pane">
+			<h1><%= config.bot.name %> : Phantoms</h1>
+			<div class="gridster-wrapper">
+		    <div class="gridster">
+		      <ul>
+		      
+		        <li class='gridster-item' data-row="1" data-col="1" data-sizex="2" data-sizey="2">
+		          <div class="plugin-gridster info">
+		            <div class="plugin-body"><div class="front"><div class="flip-body">
+		          
+		              <h2><img src="images/phantomjs-white.png" style="margin-right: 10px;" /> Phantoms JS</h2>
+		              <div class="overflow">
+		                <p><%= config.bot.name %> va chercher une partie de ses connaissances sur Internet. Pour ce faire elle pilote un navigateur web appelé PhantomJS</p>
+		                <p>Les requêtes HTTP envoyées à l'adresse <code>http://ip:port/sarah/phantom/script</code> entrainent l'execution du script du même nom situé dans le répertoire <code>/script/phantom</code>.</p>
+		              </div>
+		               
+		            </div></div></div>
+		          </div>
+		        </li>
+		        
+		        <%- partial('fragments/module-gridster', {'type' : 'phantoms',  'modules' : config.phantoms }) %>
+		        
+		      </ul>
+		    </div>
+			</div>
+		</div>
+		
+		<div id="cron" class="tab-pane">
+			<h1><%= config.bot.name %> : C.R.O.N.</h1>
+			<div class="gridster-wrapper">
+		    <div class="gridster">
+		      <ul>
+		      
+		        <li class='gridster-item' data-row="1" data-col="1" data-sizex="2" data-sizey="2">
+		          <div class="plugin-gridster info">
+		            <div class="plugin-body"><div class="front"><div class="flip-body">
+		          
+		              <h2><img src="images/cron-white.png" style="margin-right: 10px;" /> CRON</h2>
+		              <div class="overflow">
+		                <p><%= config.bot.name %> est capable d'executer des tâches périodiques. Ces tâches s'appelent des <a href="http://en.wikipedia.org/wiki/Cron">CRON</a>.</p>
+		                <p>Les CRON sont des scripts déclarés dans le répertoire <code>/script</code>. La syntaxe est très puissante mais un peu complexe.</p>
+		                <p>Le CRON calendar permet de vocaliser du texte à des moments précis. GoogleCalendar devient alors une timeline. Et couplé à des règles <a href="https://ifttt.com/google_calendar">Ifttt</a> ça devient un pont entre la maison et internet.</p>
+		              </div>
+		               
+		            </div></div></div>
+		          </div>
+		        </li>
+		      
+		        <%- partial('fragments/module-gridster', {'type' : 'cron',  'modules' : config.cron }) %>
+		      </ul>
+		    </div>
+		  </div>
+		</div>
+	</div>
+	<%- partial('fragments/editor') %>
+</div>	  

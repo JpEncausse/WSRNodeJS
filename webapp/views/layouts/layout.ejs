@@ -20,30 +20,20 @@
     <meta name="msapplication-badge" value="frequency=30;polling-uri=http://127.0.0.1:8080/badge" />
     
     <!-- Le styles -->
-    <link href="bootstrap/css/bootstrap.css" rel="stylesheet">
-    <style type="text/css">
-      body {
-        padding-top: 60px;
-        padding-bottom: 40px;
-      }
-      .sidebar-nav {
-        padding: 9px 0;
-      }
-    </style>
-    <link href="bootstrap/css/bootstrap-responsive.css" rel="stylesheet" media="screen">
-    <link href="gridster/jquery.gridster.css" rel="stylesheet">
-    <link href="css/bootstrap-switch.css" rel="stylesheet">
+    <link href="bootstrap/css/bootstrap.css"           rel="stylesheet">
+    <link href="gridster/jquery.gridster.css"          rel="stylesheet">
+    <link href="css/bootstrap-switch.css"              rel="stylesheet">
     
-    <link href="css/theme.css"          rel="stylesheet">
-    <link href="css/theme-gridster.css" rel="stylesheet">
-    <link href="css/theme-editor.css"   rel="stylesheet">
-    <link href="css/theme-ifttt.css"    rel="stylesheet">
-    
+    <link href="css/layout.css"    rel="stylesheet">
+    <link href="css/gridster.css"  rel="stylesheet">
+    <link href="css/ifttt.css"     rel="stylesheet">
+
     <%- stylesheets -%>
     
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
-      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+      <script src="bootstrap/assets/html5shiv.js"></script>
+      <script src="bootstrap/assets/respond.min.js"></script>
     <![endif]-->
 
     <!-- Le fav and touch icons -->
@@ -54,11 +44,87 @@
     <link rel="apple-touch-icon-precomposed"                 href="bootstrap/ico/apple-touch-icon-57-precomposed.png">
     
     <script src="js/jquery-1.8.2.js"></script>
+    <script src="js/moment_langs.min.js"></script>
+    
   </head>
 
   <body>
+  
+<% var config = SARAH.ConfigManager.getConfig();  %>
+<div id="container" class="container">
+  <div class="stretch row">
+      <div class="stretch col-md-2">
+        <div id="navbar" >
+        
+          <h2><script>document.write(moment().format("HH:mm"));</script></h2>
+            
+          <p class="text-center" style="font-size: 20px; padding: 10px;"><a href="/home" class="btn btn-red" style="padding: 5px 30px">Accueil</a></p>
+            
+          <ul class="nav">
+            <li <%= nav == 'store' ? "class='active'" : "" %>><a href="/store" id="storeMenu">Store</a></li>
+            <li <%= nav == 'rules' ? "class='active'" : "" %>><a href="/rules" id="rulesMenu">Règles</a></li>
+            <li <%= nav == 'kinect'? "class='active'" : "" %>><a href="/kinect">WebSocket</a></li>
+            <li <%= nav == 'about' ? "class='active'" : "" %>><a href="/about">A propos</a></li>
+          </ul>
+          
+          <% if (nav == 'home' && !SARAH.PluginManager.hasPlugins()) { %>
+            <%- partial('../fragments/popover') %>
+          <% } %>
+          
+          <% if (nav === 'home') { %>
+          <p class="text-center" style="font-size: 20px; padding: 20px;"><span class="glyphicon glyphicon-ok-circle"></span></p>
+          
+          <ul class="nav">
+            <li class='active'><a href="#modules"  data-toggle="tab">Module</a></li>
+            <li>               <a href="#phantoms" data-toggle="tab">Phantom</a></li>
+            <li>               <a href="#cron"     data-toggle="tab">C.R.O.N.</a></li>
+          </ul>
+          <% } %>
+          
+          <p class="text-center" style="font-size: 20px; padding: 20px;"><span class="glyphicon glyphicon-ok-circle"></span></p>
+            
+          <ul class="nav">
+            <li><a href="http://encausse.wordpress.com/s-a-r-a-h/s-a-r-a-h-documentation/">Documentation</a></li>
+            <li><a href="http://plus.google.com/u/0/communities/105964514508504667709">Communauté</a></li>
+            <li><a href="http://encausse.spreadshirt.fr/">Boutique</a></li>
+            <li><a href="https://mapsengine.google.com/map/edit?mid=zwdZSL38CZZM.kKTHzTbZC0kQ">Cartographie</a></li>
+            <li><a href="http://encausse.net/s-a-r-a-h/" class="navbar-link">Encausse.net</a></li>
+          </ul>
+          
+          <p class="text-center" style="font-size: 20px; padding: 20px;"><span class="glyphicon glyphicon-ok-circle"></span></p>
+          
+        </div>
+      </div>
+      
 
-    <%- body -%>
+      <%- body -%>
+
+      
+      <div class="stretch col-md-2" >
+        <div id="navchat">
+          <h2>Live</h2>
+          <h2 class="head" style="text-align: center"><img src="images/headline-logo.png" id="headline-logo" width="200"/></h2>
+          
+          <p id="ticker"><%= SARAH.ConfigManager.getTicker() %></p>
+          
+          <h3>Encausse.net <span class="glyphicon glyphicon-export"></span></h3>
+          <ul id="news">
+          <% 
+            var feed = SARAH.getRSSFeed('http://encausse.wordpress.com/category/domotique/sarah/feed/')
+	          for(var i = 0 ; feed && i < 6 && i < feed.items.length ; i++){
+	            var item = feed.items[i];
+	        %>
+	        <li>
+	          <span class='glyphicon glyphicon-record'></span>
+	          <a href="<%= item.link %>"><%= item.title %></a>
+	        </li>
+	        <% } %>
+          </ul>
+        </div>
+      </div>
+  
+  </div>
+</div>
     
     <!-- Le javascript
 		================================================== -->

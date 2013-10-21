@@ -1,0 +1,226 @@
+.gridster-wrapper{
+  margin-left: -10px;
+  height: 100%;
+}
+
+.gridster {
+  
+}
+
+.gridster > UL {
+  list-style-type: none;
+}
+
+.gridster > UL > LI .plugin-gridster {
+  height: 100%;
+  position: relative;
+}
+
+.gridster > UL > LI .flip {
+  position: absolute;
+  top: 4px; right: 6px;
+  z-index: 1;
+}
+
+.gridster > UL > LI .flip-body { 
+  padding: 10px;
+}
+
+.gridster > UL > LI H3 {
+  margin-top: 0
+}
+
+.gridster > UL > LI .plugin-footer-left {
+  position: absolute;
+  bottom: 0px; left: 10px;
+}
+
+.gridster > UL > LI .plugin-footer-right {
+  position: absolute;
+  bottom: 0px; right: 10px;
+}
+
+.gridster LI[data-sizex="1"] .plugin-footer-left SPAN.btn-label{
+  display: none;
+}
+
+/* ------------------------------------------ */
+/*  LOOK & FEEL                               */
+/* ------------------------------------------ */
+
+.gridster .btn {
+  color: #6A5F4D;
+  background: #EDEDE5;  border-color: #D8D3BF;
+          border-radius: 2px;
+     -moz-border-radius: 2px;
+  -webkit-border-radius: 2px;
+}
+
+.plugin-gridster,
+.plugin-gridster .front,
+.plugin-gridster .back {
+          border-radius: 2px;
+     -moz-border-radius: 2px;
+  -webkit-border-radius: 2px;
+  background: #FFF;
+  color: #6A5F4D;
+  font-family: 'Open Sans Condensed', sans-serif;
+}
+.plugin-gridster IMG{
+  max-width: 100%;
+  max-height: 100%;
+}
+.plugin-gridster SPAN {
+  margin-top: 3px;
+}
+
+.plugin-gridster .front,
+.plugin-gridster .back {
+          box-shadow: 1px 1px 4px 0px #959595;
+     -moz-box-shadow: 1px 1px 4px 0px #959595;
+  -webkit-box-shadow: 1px 1px 4px 0px #959595;
+}
+
+.plugin-gridster .overflow {
+  height: 70px;
+  overflow-y: auto;  
+}
+
+LI[data-sizey="2"] .overflow {
+  height: 250px;
+}
+
+
+/* ------------------------------------------ */
+/*  SKIN                                      */
+/* ------------------------------------------ */
+
+.plugin-gridster H3 {
+  text-transform: capitalize;
+}
+
+.plugin-gridster .glyphicon-refresh {
+  color: #666666;
+}
+
+.plugin-gridster H3.default,
+.plugin-gridster.default H3 {
+  color: #FFF;
+  background-color: #33A3EC;
+  border-bottom: 1px solid #43B2FE;
+  margin: -10px -10px 10px -10px;
+  font-size: 16px; line-height: 28px; padding: 0px 6px;
+  
+          border-radius: 2px 2px 0px 0px;
+     -moz-border-radius: 2px 2px 0px 0px;
+  -webkit-border-radius: 2px 2px 0px 0px;
+}
+
+
+.plugin-gridster.red H3 {
+  background-color: #DA3610;
+  border-bottom-color: #BA1600;
+}
+
+.plugin-gridster.orange H3 {
+  background-color: #FF702A;
+  border-bottom-color: #FF6316;
+}
+
+.plugin-gridster.green H3 {
+  background-color: #8DCA35;
+  border-bottom-color: #6DAA15;
+}
+
+.plugin-gridster.yellow H3 {
+  background-color: #FFD81A;
+  border-bottom-color: #DFB80A;
+}
+
+.plugin-gridster.brown H3 {
+  background-color: #7A6550;
+  border-bottom-color: #5F4E34;
+}
+
+.plugin-gridster.brown H3 {
+  background-color: #7A6550;
+  border-bottom-color: #5F4E34;
+}
+
+.plugin-gridster.pink H3 {
+  background-color: #F3635B;
+  border-bottom-color: #E55F58;
+}
+
+.plugin-gridster.black H3 {
+  background-color: #191818;
+  border-bottom-color: #191818;
+}
+
+.plugin-gridster.info H2 {
+  font-weight: 300;
+  margin-top: 0;
+  margin: -10px -10px 10px -10px;
+  padding: 0px 10px 0px 20px;
+  line-height: 80px;
+  color: #FFFFFF;
+  background-color: #7A6550;
+}
+
+
+
+/* ------------------------------------------ */
+/*  FLIP CONTAINER                            */
+/* ------------------------------------------ */
+
+/* entire container, keeps perspective */
+.flip-container {
+          perspective: 1000;
+     -moz-perspective: 1000;
+  -webkit-perspective: 1000;  
+}
+
+/* flip the pane when hovered */
+/*.flip-container:hover .flipper,*/ 
+.flip-container.hover .flipper {
+          transform: rotateY(180deg);
+     -moz-transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg);
+}
+
+.ie .flip-container.hover .flipper .front{ display: none; }
+
+/* flip speed goes here */
+.flipper {
+          transition: 0.6s;
+     -moz-transition: 0.6s;
+  -webkit-transition: 0.6s;
+  
+          transform-style: preserve-3d;
+     -moz-transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+  
+  height: 100%;
+  position: relative;
+}
+
+/* hide back of pane during swap */
+.front, .back { 
+          backface-visibility: hidden;
+     -moz-backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  
+  width: 100%; height: 100%;
+  position: absolute;
+  top: 0; left: 0;
+}
+
+/* front pane, placed above back */
+.front { z-index: 2; }
+
+/* back, initially hidden pane */
+.back { 
+          transform: rotateY(180deg);
+     -moz-transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg);
+}

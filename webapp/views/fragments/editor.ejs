@@ -1,15 +1,23 @@
-<% script('codemirror/codemirror.js') %>
+<% stylesheet('codemirror/codemirror.css') %>
+<%     script('codemirror/codemirror.js') %>
+
 <% script('codemirror/mode/javascript.js') %>
 <% script('codemirror/mode/xml.js') %>
-<% stylesheet('codemirror/codemirror.css') %>
 
-<% script('js/editor.js') %>
+<% stylesheet('css/editor.css') %>
+<%     script('js/editor.js') %>
 
-<div class="modal hide fade" id="editor">
-  <div class="modal-header"><h3>Editeur</h3></div>
-  <div class="modal-body"></div>
-  <div class="modal-footer">
-    <a href="#" class="btn" data-dismiss="modal">Fermer</a>
-    <a href="#" class="btn btn-primary btn-save">Enregistrer</a>
+<div class="modal fade" id="editor">
+  <div class="modal-dialog">
+    <div class="modal-content">
+    
+		  <div class="modal-header"><h3>Editeur</h3></div>
+		  <div class="modal-body"></div>
+		  <div class="modal-footer">
+		    <a href="#" class="btn" data-dismiss="modal">Fermer</a>
+		    <a href="#" class="btn btn-primary btn-save">Enregistrer</a>
+		  </div>
+		  
+    </div>
   </div>
-</div> 
+</div>

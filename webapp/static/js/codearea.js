@@ -14,14 +14,13 @@
     if (!cm) {
       cm = CodeMirror.fromTextArea($('#codearea')[0],{ mode: 'javascript', tabSize : 2, lineNumbers: true });
       $modal.data('CodeMirror', cm);
-      $modal.modal().on('shown', function () { cm.refresh(); });
-      $modal.find('.btn-primary').on('click', function(){ $modal.data('script').val(cm.getValue()) })
+      $modal.modal().on('shown.bs.modal', function () { cm.refresh(); });
+      $modal.find('.btn-blue').on('click', function(){ $modal.data('script').val(cm.getValue()) })
     }
     
     cm.setValue($input.val());
     $modal.data('script', $input);
     $modal.modal('show');
-    
     event.preventDefault();
   }
   

@@ -1,118 +1,112 @@
+
 <% layout('layouts/layout') %>
+<%- partial('fragments/codearea') %>
+<div class="stretch col-md-8 content ifttt">
 
-    <% script('js/rules.js') %>
-    <%- partial('fragments/navbar') %>
-    <%- partial('fragments/headline') %>
-    <%- partial('fragments/codearea') %>   
-    <% 
-      var init = false;
-      var rules = SARAH.ConfigManager.getConfig().rules;
-      if (!rules){ rules = [{ "if" : " ", "then" : " ", "script" : " " }]; }
-      for (var r in rules){ var rule = rules[r];
-        if (rule['if'] == 'before'){ init = true; break; }
-        if (rule['if'] == 'after') { init = true; break; }
-      }
-      if (!init){
-        rules.push({ "if" : "before", "then" : " ", "script" : " " });
-        rules.push({ "if" : "after",  "then" : " ", "script" : " " });
-      }
-    %>
-    <div id="container" class="container">
-       
-	        <div class="page ifttt">
-	          <h2>If This Then That</h2>
-	          <p>
-              S.A.R.A.H execute des scripts <img src="images/script_icon.png" alt="script" /> via des requêtes HTTP déclenchées par:
-              <ul>
-                <li>de la reconnaissance vocale <img src="images/speech_icon.png" alt="parole" /> définie en XML</li>
-                <li>de la reconnaissance gestuelle <img src="images/gesture_icon.png" alt="geste" /> définie en XML</li>
-                <li>de la reconnaissance de QRCode <img src="images/qrcode_icon.png" alt="qrcode" /> (l'URL est dans le code)</li>
-                <li>un évènement de calendrier <img src="images/calendar_icon.png" alt="calendrier" /> (l'URL est dans le where)</li>
-              </ul>
-            </p>
-	          <p>
-	            Par défaut, ces scripts <img src="images/script_icon.png" alt="script" /> doivent retourner une valeur <code>{ tts: 'text to speech' }</code> qui sera vocalisée <img src="images/speak_icon.png" alt="vocaliser" />. 
-	            La mécanique de règles permet de surcharger ce comportement en chaînant d'autres actions à la place de la vocalisation.  Les règles sont exécutée dans l'ordre présenté.
-	          </p>
-	          <form method="POST" action="/rules">
-	          <p>&nbsp;</p>
-	          <h3>Par défaut</h3>
-            <div class="row-fluid rule">
-              <div class="span1"><i>If</i></div>
-              <div class="span3 glyph"><img src="images/speech.png" alt="parole"/> <i>Speech</i></div>
-              <div class="span2"><i>then</i></div>
-              <div class="span3 glyph"><img src="images/script.png" alt="script" /> <i>Script</i></div> 
-            </div>
-            <div class="row-fluid rule">
-              <div class="span1"><i>If</i></div>
-              <div class="span3 glyph"><img src="images/gesture.png" alt="geste" /> <i>Gesture</i></div>
-              <div class="span2"><i>then</i></div>
-              <div class="span3 glyph"><img src="images/script.png" alt="script" /> <i>Script</i></div> 
-            </div>
-            <div class="row-fluid rule">
-              <div class="span1"><i>If</i></div>
-              <div class="span3 glyph"><img src="images/qrcode.png" alt="qrcode" /> <i>QRCode</i></div>
-              <div class="span2"><i>then</i></div>
-              <div class="span3 glyph"><img src="images/script.png" alt="script" /> <i>Script</i></div> 
-            </div>
-            <div class="row-fluid rule">
-              <div class="span1"><i>If</i></div>
-              <div class="span3 glyph"><img src="images/calendar.png" alt="calendrier" /> <i>Calendar</i></div>
-              <div class="span2"><i>then</i></div>
-              <div class="span3 glyph"><img src="images/script.png" alt="script" /> <i>Script</i></div> 
-            </div>
-            <div class="row-fluid rule">
-              <div class="span1"><i>If</i></div>
-              <div class="span3 glyph"><img src="images/calendar.png" alt="calendrier" /> <i>Calendar</i></div>
-              <div class="span2"><i>then</i></div>
-              <div class="span3 glyph"><img src="images/speak.png" alt="vocaliser" /> <i>Speak</i></div> 
-            </div>
-            
-            <p>&nbsp;</p>
-            <h3>Filtres</h3>
-            <p>
-              Les filtres sont executés sur tous les plugins comme des règles de manière à pouvoir effectuer des actions transverses.
-            </p>
-            <% for (var r in rules){ var rule = rules[r]; %>
-            <% if (rule['if'] != 'before' && rule['if'] != 'after') { continue; } %>
-            <% var disabled = rule['disabled'] == 'true'; %>
-            <div class="row-fluid rule">
-              <div class="span1"><i>&nbsp;</i></div>
-              <div class="span3 glyph">
-                <img src="images/script.png" class="glyph" alt="script" />
-                <i><%= rule['if'] %></i>
-                <input type="hidden" name="if" value="<%= rule['if'] %>" />
-              </div>
-              <div class="span2"><i>then&nbsp;</i><i><a href="#" class="script">do</a></i><input type="hidden" name="script" value="<%= rule['script'] %>" /></div>
-              <div class="span3"><%- partial('fragments/rules-select', { 'builtin' : true, 'widget': 'then', 'rule' : rule['then'] }) %></div> 
-              <div class="span2"><div class="switch" style="margin-top: 4px;"><input class="swtch" type="checkbox" value="true" <%- disabled ? '' : 'checked="checked"' %>/><input type="hidden" name="disabled" value="<%= disabled %>"/></div></div>
-            </div>
-            <% } %>
-            
-            <p>&nbsp;</p>
-            <h3>Modules</h3>
-            <p>
-              Un objet JSON <code>options</code> est passé d'un script à l'autre. 
-              Il contient les paramètres de requête ainsi que le contenu de toutes les <code>callback()</code>.
-              En cliquant sur <code>do</code> il est possible de modifier cet objet.
-            </p>
-            <% for (var r in rules){ var rule = rules[r]; %>
-            <% if (rule['if'] == 'before' || rule['if'] == 'after') { continue; } %>
-            <% var disabled = rule['disabled'] == 'true'; %>
-            <div class="row-fluid rule">
-              <div class="span1"><i>If</i></div>
-              <div class="span3"><%- partial('fragments/rules-select', { 'builtin' : false, 'widget': 'if', 'rule' : rule['if'] }) %></div>
-              <div class="span2"><i>then&nbsp;</i><i><a href="#" class="script">do</a></i><input type="hidden" name="script" value="<%= rule['script'] %>" /></div>
-              <div class="span3"><%- partial('fragments/rules-select', { 'builtin' : true, 'widget': 'then', 'rule' : rule['then'] }) %></div> 
-              <div class="span2"><div class="switch" style="margin-top: 4px;"><input class="swtch" type="checkbox" value="true" <%- disabled ? '' : 'checked="checked"' %>/><input type="hidden" name="disabled" value="<%= disabled %>"/></div></div>
-            </div>
-            <% } %>
-            <p style="margin-top: 20px;">
-              <input type="submit" class="btn btn-primary" value="Enregistrer" />
-              <a href="#" class="btn" id="addRule">Ajouter une règle</a>
-            </p> 
-            </form>
-          </div>
-
-    </div><!--/.fluid-container-->
-    <%- partial('fragments/footer') %>
+	<% script('js/rules.js') %> 
+	<% 
+	  var init = false;
+	  var rules = SARAH.ConfigManager.getConfig().rules;
+	  if (!rules){ rules = [{ "if" : " ", "then" : " ", "script" : " " }]; }
+	  for (var r in rules){ var rule = rules[r];
+	    if (rule['if'] == 'before'){ init = true; break; }
+	    if (rule['if'] == 'after') { init = true; break; }
+	  }
+	  if (!init){
+	    rules.push({ "if" : "before", "then" : " ", "script" : " " });
+	    rules.push({ "if" : "after",  "then" : " ", "script" : " " });
+	  }
+	%>
+	<h1>If This Then That</h1>
+	<p>
+	  S.A.R.A.H execute des scripts <img src="images/script_icon.png" alt="script" /> via des requêtes HTTP déclenchées par:
+	  <ul>
+	    <li>de la reconnaissance vocale <img src="images/speech_icon.png" alt="parole" /> définie en XML</li>
+	    <li>de la reconnaissance gestuelle <img src="images/gesture_icon.png" alt="geste" /> définie en XML</li>
+	    <li>de la reconnaissance de QRCode <img src="images/qrcode_icon.png" alt="qrcode" /> (l'URL est dans le code)</li>
+	    <li>un évènement de calendrier <img src="images/calendar_icon.png" alt="calendrier" /> (l'URL est dans le where)</li>
+	  </ul>
+	</p>
+	<p>
+	  Par défaut, ces scripts <img src="images/script_icon.png" alt="script" /> doivent retourner une valeur <code>{ tts: 'text to speech' }</code> qui sera vocalisée <img src="images/speak_icon.png" alt="vocaliser" />. 
+	  La mécanique de règles permet de surcharger ce comportement en chaînant d'autres actions à la place de la vocalisation.  Les règles sont exécutée dans l'ordre présenté.
+	</p>
+	<form method="POST" action="/rules">
+	  <p>&nbsp;</p>
+	  <h3>Par défaut</h3>
+		<div class="row rule">
+		  <div class="col-md-1"><span class="ifttt-lbl">If</span></div>
+		  <div class="col-md-3 glyph"><img src="images/speech.png" alt="parole"/> <span class="ifttt-lbl">Speech</span></div>
+		  <div class="col-md-2"><span class="ifttt-lbl">then</span></div>
+		  <div class="col-md-3 glyph"><img src="images/script.png" alt="script" /> <span class="ifttt-lbl">Script</span></div> 
+		</div>
+		<div class="row rule">
+		  <div class="col-md-1"><span class="ifttt-lbl">If</span></div>
+		  <div class="col-md-3 glyph"><img src="images/gesture.png" alt="geste" /> <span class="ifttt-lbl">Gesture</span></div>
+		  <div class="col-md-2"><span class="ifttt-lbl">then</span></div>
+		  <div class="col-md-3 glyph"><img src="images/script.png" alt="script" /> <span class="ifttt-lbl">Script</span></div> 
+		</div>
+		<div class="row rule">
+		  <div class="col-md-1"><span class="ifttt-lbl">If</span></div>
+		  <div class="col-md-3 glyph"><img src="images/qrcode.png" alt="qrcode" /> <span class="ifttt-lbl">QRCode</span></div>
+		  <div class="col-md-2"><span class="ifttt-lbl">then</span></div>
+		  <div class="col-md-3 glyph"><img src="images/script.png" alt="script" /> <span class="ifttt-lbl">Script</span></div> 
+		</div>
+		<div class="row rule">
+		  <div class="col-md-1"><span class="ifttt-lbl">If</span></div>
+		  <div class="col-md-3 glyph"><img src="images/calendar.png" alt="calendrier" /> <span class="ifttt-lbl">Calendar</span></div>
+		  <div class="col-md-2"><span class="ifttt-lbl">then</span></div>
+		  <div class="col-md-3 glyph"><img src="images/script.png" alt="script" /> <span class="ifttt-lbl">Script</span></div> 
+		</div>
+		<div class="row rule">
+		  <div class="col-md-1"><span class="ifttt-lbl">If</span></div>
+		  <div class="col-md-3 glyph"><img src="images/calendar.png" alt="calendrier" /> <span class="ifttt-lbl">Calendar</span></div>
+		  <div class="col-md-2"><span class="ifttt-lbl">then</span></div>
+		  <div class="col-md-3 glyph"><img src="images/speak.png" alt="vocaliser" /> <span class="ifttt-lbl">Speak</span></div> 
+		</div>
+	
+	  <p>&nbsp;</p>
+		<h3>Filtres</h3>
+		<p>
+		  Les filtres sont executés sur tous les plugins comme des règles de manière à pouvoir effectuer des actions transverses.
+		</p>
+		<% for (var r in rules){ var rule = rules[r]; %>
+		<% if (rule['if'] != 'before' && rule['if'] != 'after') { continue; } %>
+		<% var disabled = rule['disabled'] == 'true'; %>
+		<div class="row rule">
+		  <div class="col-md-1"><span class="ifttt-lbl">&nbsp;</span></div>
+		  <div class="col-md-3 glyph">
+		    <img src="images/script.png" class="glyph" alt="script" />
+		    <span class="ifttt-lbl"><%= rule['if'] %></span>
+		    <input type="hidden" name="if" value="<%= rule['if'] %>" />
+		  </div>
+		  <div class="col-md-2"><span class="ifttt-lbl">then&nbsp;</span><span class="ifttt-lbl"><a href="#" class="script">do</a></span><input type="hidden" name="script" value="<%= rule['script'] %>" /></div>
+		  <div class="col-md-3"><%- partial('fragments/rules-select', { 'builtin' : true, 'widget': 'then', 'rule' : rule['then'] }) %></div> 
+		  <div class="col-md-2"><div class="switch" style="margin-top: 4px;"><input class="swtch" type="checkbox" value="true" <%- disabled ? '' : 'checked="checked"' %>/><input type="hidden" name="disabled" value="<%= disabled %>"/></div></div>
+		</div>
+		<% } %>
+	
+		<p>&nbsp;</p>
+		<h3>Modules</h3>
+		<p>
+		  Un objet JSON <code>options</code> est passé d'un script à l'autre. 
+		  Il contient les paramètres de requête ainsi que le contenu de toutes les <code>callback()</code>.
+		  En cliquant sur <code>do</code> il est possible de modifier cet objet.
+		</p>
+		<% for (var r in rules){ var rule = rules[r]; %>
+		<% if (rule['if'] == 'before' || rule['if'] == 'after') { continue; } %>
+		<% var disabled = rule['disabled'] == 'true'; %>
+		<div class="row rule">
+		  <div class="col-md-1"><span class="ifttt-lbl">If</span></div>
+		  <div class="col-md-3"><%- partial('fragments/rules-select', { 'builtin' : false, 'widget': 'if', 'rule' : rule['if'] }) %></div>
+		  <div class="col-md-2"><span class="ifttt-lbl">then&nbsp;</span><span class="ifttt-lbl"><a href="#" class="script">do</a></span><input type="hidden" name="script" value="<%= rule['script'] %>" /></div>
+		  <div class="col-md-3"><%- partial('fragments/rules-select', { 'builtin' : true, 'widget': 'then', 'rule' : rule['then'] }) %></div> 
+		  <div class="col-md-2"><div class="switch" style="margin-top: 4px;"><input class="swtch" type="checkbox" value="true" <%- disabled ? '' : 'checked="checked"' %>/><input type="hidden" name="disabled" value="<%= disabled %>"/></div></div>
+		</div>
+		<% } %>
+		<p style="margin-top: 40px;">
+		  <input type="submit" class="btn btn-red" value="Enregistrer" />
+		  <a href="#" class="btn btn-blue" id="addRule">Ajouter une règle</a>
+		</p>
+  </form>
+</div>

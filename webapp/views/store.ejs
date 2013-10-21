@@ -1,57 +1,52 @@
 <% layout('layouts/layout') %>
-    
-    <%- partial('fragments/navbar') %>
-    <%- partial('fragments/confirm') %>
-    <%- partial('fragments/headline') %>
-    
-    <div id="container" class="container">
+<%- partial('fragments/confirm') %>
+<div class="stretch col-md-8 content" id="store">
+	<h1>Plugins</h1>
+	<p>
+	  Voici la liste des plugins disponibles pour S.A.R.A.H. 
+	  Vous devez <strong>suprimer un plugin pour installer</strong> une nouvelle version.
+	  Le serveur <strong>doit être redémarré après modifications</strong>.
+	</p>
+	
+	<h4>Pour diffuser vos plugins:</h4>
+	<ol>
+	  <li>S'inscrire <a href="https://plus.google.com/u/0/communities/105964514508504667709">sur la communauté Google+</a></li>
+	  <li><a href="http://encausse.wordpress.com/s-a-r-a-h/s-a-r-a-h-documentation/comment-publier-plugin/">Comment publier ses plugins dans l’AppStore ?</a></li> 
+	</ol>
+	
+	<p>&nbsp;</p>
+	<table class="table table-striped table-hover">
 
-      <div class="page">
-        <h2>Plugins</h2>
-        <p>
-          Voici la liste des plugins disponibles pour S.A.R.A.H. 
-          Vous devez <strong>suprimer un plugin pour installer</strong> une nouvelle version.
-          Le serveur <strong>doit être redémarré après modifications</strong>.
-        </p>
-
-        <h4>Pour diffuser vos plugins:</h4>
-        <ol>
-          <li>S'inscrire <a href="https://plus.google.com/u/0/communities/105964514508504667709">sur la comunauté Google+</a></li>
-          <li><a href="http://encausse.wordpress.com/s-a-r-a-h/s-a-r-a-h-documentation/comment-publier-plugin/">Comment publier ses plugins dans l’AppStore ?</a></li> 
-        </ol>
-        <p>&nbsp;</p>
-        <table class="table table-bordered table-striped table-hover">
-          <tr>
-            <th>Nom</th>
-            <th>Stats</th>
-            <th>Version</th>
-            <th>Auteur</th>
-            <th>Catégorie</th>
-            <th>Description</th>
-            <th>&nbsp;</th>
-          </tr>
-        <% var plugins = SARAH.PluginManager.getPlugins(); %>
-        <% for (var p in plugins){ %>
-        <% var plugin = plugins[p]; %> 
-          <tr>
-            <% if (!plugin.url) { %><td><%= plugin.name %></td><% } else { %> 
-            <td><a href="<%= plugin.url %>" target="_blank"><%= plugin.name %></a></td><% } %>
-            <td style="text-align: center;" nowrap><% if (plugin.dl){ %><a href="#" data-dl="<%= plugin.dl %>"><i class="icon-signal"></i></a><% } %></td>
-            <td><%= plugin.v %></td>
-            <td><%- plugin.author.indexOf('@') == 0 ? "<a href='http://twitter.com/"+plugin.author.substring(1)+"'>"+plugin.author+"</a>" : plugin.author %></td>
-            <td><%= plugin.tags %></td>
-            <td><%= plugin.description %></td>
-            <td> 
-            <% if (plugin.installed){ %>
-              <a href="/store?delete=<%= plugin.name %>" class="btn btn-danger confirm" title="Confirmer la suppression du plugin : '<%= plugin.name %>' ?">Supprimer...</a>
-            <% } else if (plugin.remote && plugin.dl){ %>
-              <a href="/store?install=<%= plugin.name %>" class="btn btn-primary confirm" title="Confirmer l'installation du plugin : '<%= plugin.name %>' ?">Installer...</a>
-            <% } %>
-            </td>
-          </tr>
-        <% } %>
-        </table>
-      </div>
-	        
-    </div><!--/.fluid-container-->
-    <%- partial('fragments/footer') %>
+	<% var plugins = SARAH.PluginManager.getPlugins(); %>
+	<% for (var p in plugins){ %>
+	<% var plugin = plugins[p]; %> 
+	<%
+	  var isDisplay = plugin.url && plugin.url.indexOf('plus.google.com') > 0;
+	  var display   = isDisplay  ? 'display' : 'popup';
+	  var url       = plugin.url; // isDisplay  ? '/plugin?name='+plugin.name : plugin.url;
+	%>
+	  <tr>
+	    <td>
+	      <% if (!plugin.url) { %><%= plugin.name %><% } else { %>
+	        <a href="<%= url %>" class='<%= display %>'><span class="glyphicon glyphicon-globe"></span> <%= plugin.name %></a>
+	      <% } %>
+	    </td>
+	    <td style="white-space: nowrap;"><%= plugin.v %></td>
+	    <td style="white-space: nowrap; text-align: center; " >
+	      <% if (plugin.dl){ %><a href="#" data-dl="<%= plugin.dl %>"><span class="glyphicon glyphicon-signal"></span></a><% } %>
+	    </td>
+	    <td><%- plugin.author.indexOf('@') == 0 ? "<a href='http://twitter.com/"+plugin.author.substring(1)+"'>"+plugin.author+"</a>" : plugin.author %></td>
+	    <td class="tags"><%= plugin.tags %></td>
+	    <td class="description"><%= plugin.description %></td>
+	    <td><% if (plugin.dl){ %><a href="<%= plugin.dl %>"><span class="glyphicon glyphicon-cloud-download"></span></a><% } %></td>
+	    <td> 
+	    <% if (plugin.installed){ %>
+	      <a href="/store?delete=<%= plugin.name %>" class="btn btn-xs btn-red confirm" title="Confirmer la suppression du plugin : '<%= plugin.name %>' ?">Supprimer...</a>
+	    <% } else if (plugin.remote && plugin.dl){ %>
+	      <a href="/store?install=<%= plugin.name %>" class="btn btn-xs btn-blue confirm" title="Confirmer l'installation du plugin : '<%= plugin.name %>' ?">Installer...</a>
+	    <% } %>
+	    </td>
+	  </tr>
+	<% } %>
+	</table>
+</div>

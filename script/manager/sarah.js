@@ -8,11 +8,9 @@ var exists = function(cmd){
   if (config.modules[cmd] || cmd == 'time'){
     return true;
   }
-  
   if (config.phantoms[cmd]){
     return true;
   }
-  
   return false;
 }
 
@@ -59,17 +57,23 @@ var last = function(res){
 
 var dispatch = function(cmd, options, res){
   
+  var skip = true;
+  if (res){
+    skip = res.skip;
+    res.skip = true;
+  }
+  
   // Write head
-  if (res){ res.writeHead(200, {'Content-Type': 'text/html; charset=utf-8'});  }
+  if (!skip){ res.writeHead(200, {'Content-Type': 'text/html; charset=utf-8'});  }
   
   // Dispatch to rules
   if (SARAH.RuleManager.dispatch(cmd, options)){
-    if (res){ res.end(); }
+    if (!skip){ res.end(); }
     return;
   }
   
   // Write end
-  if (res){ res.end(options.tts); return; }
+  if (!skip){ res.end(options.tts); return; }
   if (options.quiet){ return; } 
 
   // At last try to speak
@@ -101,6 +105,31 @@ var _key = function(key, action, mod) {
   param[action] = key;
   remote(param);
 };
+
+var RSSFeedCache = {};
+var getRSSFeed = function(url, cache){
+  
+  // Use cache
+  if (!cache && RSSFeedCache[url]){ return RSSFeedCache[url]; }
+  
+  var FeedParser = require('feedparser');
+  var request = require('request');
+  var ent = require('entity/node-ent');
+  
+  var feed = { items : [] };
+  
+  request(url)
+  .pipe(new FeedParser())
+  .on('meta', function (meta) { feed.meta = meta; })
+  .on('readable', function() {
+    var stream = this, item;
+    while (item = stream.read()) { 
+      item.description = ent.decode(item.description);
+      feed.items.push(item);
+    }
+    RSSFeedCache[url] = feed; // Cache
+  });
+}
 
 // ------------------------------------------
 //  FEATURES
@@ -186,6 +215,18 @@ var render = function(path, options){
   return ejs.render(text, options);
 };
 
+// ------------------------------------------
+//  CONTEXT
+// ------------------------------------------
+
+var routes = function(req, res, next){
+  var json = req.param('profiles');
+  if (json){
+    SARAH.context.profiles = JSON.parse(json);
+    winston.info('Updating profiles...');
+  }
+  res.end();
+};
 
 // ------------------------------------------
 //  PUBLIC
@@ -203,10 +244,14 @@ var SARAH = {
   
     return SARAH;
   },
+    
+  'render': render,
   
+  // An object to store contextual stuff
   'context' : {},
   
-  'render': render,
+  // Routes context
+  'routes' : routes,
   
   // Callback for all scripts / phantom / cron
   'dispatch': dispatch,
@@ -248,7 +293,10 @@ var SARAH = {
   'last': last,
   
   // Check if module exists
-  'exists' : exists
+  'exists' : exists,
+  
+  // Get RSS Feed
+  'getRSSFeed' : getRSSFeed
 }
 
 

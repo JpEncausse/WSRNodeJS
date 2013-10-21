@@ -1,19 +1,8 @@
 <% layout('layouts/layout') %>
-    
-    <%- partial('fragments/navbar') %>
-    <%- partial('fragments/confirm') %>
-    <%- partial('fragments/headline') %>
 
-    <div id="container" class="container">
-      <div class="page">
- 
-         <div class="page">
-	          <h3>Changelogs</h3>
-	          <pre>
+<div class="stretch col-md-8 content">
+	<h1>Changelogs</h1>
+  <pre>
 <%= SARAH.render('README/changelog.txt') %>
-	          </pre>
-          </div>
-	        
-      </div><!--/row-->
-    </div><!--/.fluid-container-->
-    <%- partial('fragments/footer') %>
+  </pre>
+</div>

@@ -1,38 +1,30 @@
 <% layout('layouts/layout') %>
+    
+<div class="stretch col-md-8 content">
 
-    <%- partial('fragments/navbar') %>
-    <%- partial('fragments/headline') %>
-    
-    <div id="container" class="container">
-      <div class="page">
-    
-	      <h3>Kinect</h3>
+  <h1>Kinect</h1>
+  
+  <form action="" method="GET" class="form-inline">
+      <input type="text"   value="127.0.0.1:7777" id="address"/>
+      <input type="button" value="Connect" class="btn btn-blue btn-sm" onclick="jQuery.sarah.websocket.register()"/>
+      <div id="logs"></div>
+  </form>
+  
+  <div id="background" class="thumbnail">
+    <img id="image-bg" src='images/s.gif' />
+    <img id="image"    src='images/s.gif' class="kinect" />
+    <img id="image-fg" src='images/s.gif' />
+  </div>
+ 
+      <div id="hologram" class="thumbnail">
+    <img id="holo1"    src='images/s.gif' class="kinect" />
+    <img id="holo2"    src='images/s.gif' class="kinect" />
+    <div id="holoC">CENTER</div>
+    <img id="holo3"    src='images/s.gif' class="kinect" />
+    <img id="holo4"    src='images/s.gif' class="kinect" />
+  </div>
+   
+  <% script('js/kinect.js') %>
+  <% stylesheet('css/kinect.css') %>
 	      
-	      <form action="" method="GET" class="form-inline">
-	          <input type="text"   value="127.0.0.1:7777" id="address"/>
-	          <input type="button" value="Connect" class="btn btn-primary" onclick="jQuery.sarah.websocket.register()"/>
-	          <div id="logs"></div>
-	      </form>
-	      
-	      <div id="background" class="thumbnail">
-	        <img id="image-bg" src='images/s.gif' />
-	        <img id="image"    src='images/s.gif' class="kinect" />
-	        <img id="image-fg" src='images/s.gif' />
-	      </div>
-	 
-	      <div id="hologram" class="thumbnail">
-	        <img id="holo1"    src='images/s.gif' class="kinect" />
-	        <img id="holo2"    src='images/s.gif' class="kinect" />
-	        <div id="holoC">CENTER</div>
-	        <img id="holo3"    src='images/s.gif' class="kinect" />
-	        <img id="holo4"    src='images/s.gif' class="kinect" />
-	      </div>
-	       
-	      <% script('js/kinect.js') %>
-	      <% stylesheet('css/kinect.css') %>
-	      
-      </div>
-    </div><!--/.fluid-container-->
-    
-    <%- partial('fragments/footer') %>
-    
+</div>   

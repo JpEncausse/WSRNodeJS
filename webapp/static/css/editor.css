@@ -1,0 +1,15 @@
+#editor .modal-dialog {
+  width: 60%;
+}
+
+#editor .modal-body  {
+  padding-bottom: 0;
+}
+
+#editor .modal-footer  {
+  margin-top: 0;
+}
+
+#editor .CodeMirror  {
+  min-height: 400px;
+}

@@ -1,14 +1,14 @@
 <% var files = SARAH.PluginManager.getFiles(key); %>
-<div class="row-fluid">
-  <div class="span2">
-    <ul class="nav nav-list">
-      <li class="nav-header">Fichiers</li>
+<div class="row">
+  <div class="col-md-2">
+    <h4>Fichiers</h4>
+    <ul class="nav nav-pills nav-stacked">
     <% files.forEach(function(f){ %>
       <li class="<%= f == file ? 'active' : ''  %>"><a class="edit-plugin" href="editor?type=<%= type %>&key=<%= key %>&file=<%= f %>"><%= f %></a></li>
     <% }); %>
     </ul>
   </div>
-  <div class="span10">
+  <div class="col-md-10">
     <form action="editor" method="POST">
       <textarea id="codearea" name="code"><%= SARAH.PluginManager.loadFile(key, file) %></textarea>
       <input type="hidden" name="type" value="<%= type %>" />

@@ -1,17 +1,20 @@
 
   <p class='plugin-footer-left'>
-    <a class="btn edit-config" href="#" data-toggle="modal" data-target="#<%= type %>_<%= key %>" title="Configurer le module"><i class="icon-wrench"></i><span> Config.</span></a>
+    <a class="btn btn-default edit-config" href="#" data-toggle="modal" data-target="#<%= type %>_<%= key %>" title="Configurer le module"><span class="glyphicon glyphicon-wrench"></span><span class="btn-label"> Config.</span></a>
     <% if (SARAH.PluginManager.hasWebPage(key)){ %>
-    <a class="btn" href="/plugins/<%= key %>" title="Documentation"><i class="icon-globe"></i><span> Doc.</span></a>
+    <a class="btn btn-default" href="/plugins/<%= key %>" title="Documentation"><span class="glyphicon glyphicon-globe"></span><span class="btn-label"> Doc.</span></a>
     <% } %>
   </p>
 
   <% if (type){ %>
-  <p class='plugin-footer-right'><a class="btn edit-plugin" href="editor?type=<%= type %>&key=<%= key %>" title="Editer les fichiers"><i class="icon-pencil"></i></a></p>
+  <p class='plugin-footer-right'><a class="btn btn-default edit-plugin" href="editor?type=<%= type %>&key=<%= key %>" title="Editer les fichiers"><span class="glyphicon glyphicon-pencil"></span></a></p>
   <% } %>
 
-<div class="modal hide fade" id="<%= type %>_<%= key %>">
-  <form class="form-horizontal" method="POST" action="/config">
+<div class="modal fade" id="<%= type %>_<%= key %>">
+  <div class="modal-dialog">
+    <div class="modal-content">
+    
+  <form class="form-horizontal" method="POST" action="/config" role="form">
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
     <h3><%= key %></h3>
@@ -26,10 +29,10 @@
 	  <% if (attr == 'description') return; %>
 	  <% if (attr == 'version')     return; %>
 	  <% if (attr == 'x' || attr == 'y' || attr == 'w' || attr == 'h' || attr == 'c') return; %>
-	  <div class="control-group">
-	    <label class="control-label"><%= attr %></label>
-	    <div class="controls">
-	      <input type="text" name="<%= attr %>" value="<%= value %>" placeholder="Saisir la valeur...">
+	  <div class="form-group">
+	    <label class="col-md-3 control-label"><%= attr %></label>
+	    <div class="col-md-8">
+	      <input class="form-control" type="text" name="<%= attr %>" value="<%= value %>" placeholder="Saisir la valeur...">
 	    </div>
 	  </div>
 	  <% }); %>
@@ -37,22 +40,27 @@
 	  <fieldset>
 	    <legend>Grille: </legend>
       
-      <label class="control-label tiny">
-      <select  name="c" class="span1">
-        <option value="default" <%= module['c'] == 'default' ? 'selected' : '' %>>default</option>
-        <option value="orange"  <%= module['c'] == 'orange'  ? 'selected' : '' %>>orange</option>
-        <option value="green"   <%= module['c'] == 'green'   ? 'selected' : '' %>>green</option>
-        <option value="yellow"  <%= module['c'] == 'yellow'  ? 'selected' : '' %>>yellow</option>
-        <option value="brown"   <%= module['c'] == 'brown'   ? 'selected' : '' %>>brown</option>
-        <option value="pink"    <%= module['c'] == 'pink'    ? 'selected' : '' %>>pink</option>
-      </select>
-      </label>
+      <div class="form-grid row">
+        <div class="col-lg-3">
+		      <select  name="c" class="form-control">
+		        <option value="default" <%= module['c'] == 'default' ? 'selected' : '' %>>default</option>
+		        <option value="red"     <%= module['c'] == 'red'     ? 'selected' : '' %>>red</option>
+		        <option value="orange"  <%= module['c'] == 'orange'  ? 'selected' : '' %>>orange</option>
+		        <option value="green"   <%= module['c'] == 'green'   ? 'selected' : '' %>>green</option>
+		        <option value="yellow"  <%= module['c'] == 'yellow'  ? 'selected' : '' %>>yellow</option>
+		        <option value="brown"   <%= module['c'] == 'brown'   ? 'selected' : '' %>>brown</option>
+		        <option value="pink"    <%= module['c'] == 'pink'    ? 'selected' : '' %>>pink</option>
+		        <option value="black"   <%= module['c'] == 'black'   ? 'selected' : '' %>>black</option>
+		      </select>
+        </div>
       
 	  <% ['x','y','w','h'].forEach(function(attr){ %>
-	    <label class="control-label tiny"><%= attr %>
-	    <input type="text" name="<%= attr %>" value="<%= module[attr] || 1 %>" class="span1" placeholder="Saisir la valeur...">
-	    </label>
+	      <div class="col-lg-2">
+	        <label class="control-label"><%= attr %></label>
+	        <input class="form-control" type="text" name="<%= attr %>" value="<%= module[attr] || 1 %>"  placeholder="Saisir la valeur...">
+	      </div>
 	  <% }); %>
+	    </div>
 	  </fieldset>
 	  
 	  <input type='hidden' name='key' value='<%= (type.length > 0 ? type+'.' : '') + key %>'/>
@@ -63,11 +71,14 @@
       v = v[type] || false; v = v[key]  || false; v = v.version || false;
       if (v) {
     %>
-    <div class="pull-left btn disabled">v<%= v %></div>
+    <div class="pull-left btn btn-default disabled">v<%= v %></div>
     <input type="hidden" name="version" value="<%= v %>"/>
     <% } %>
-    <a href="#" class="btn" data-dismiss="modal">Fermer</a>
-    <input type="submit" class="btn btn-primary" value="Enregistrer" />
+    <a href="#" class="btn btn-default" data-dismiss="modal">Fermer</a>
+    <input type="submit" class="btn btn-blue" value="Enregistrer" />
   </div>
   </form>
+  
+    </div> 
+  </div> 
 </div> 

@@ -1,18 +1,17 @@
-
-.ifttt I {
-  font-size:   32px;
+.ifttt .ifttt-lbl {
+  font-size:   28px;
   line-height: 40px;
   font-weight: bold;
   font-style: normal;
-  color: #1791CD;
+  color: #00BFDD;
 }
 
 .ifttt .rule A {
   color: #333333;
 }
 
-.ifttt .glyph I {
-  font-size: 32px;
+.ifttt .glyph .ifttt-lbl {
+  font-size: 28px;
   color: #333333;
 }
 
@@ -22,15 +21,15 @@
 .ifttt IMG.glyph  {
   z-index: 1;
   position: relative;
-  vertical-align: bottom;
+  vertical-align: top;
 }
 
 .ifttt SELECT.script {
-  width: 200px;
+  width: 160px;
   color: #333;
   border: none;
   height: 40px;
-  font-size: 32px;
+  font-size: 28px;
   font-weight: bold;
   margin-left: -10px;
   margin-bottom: 0;

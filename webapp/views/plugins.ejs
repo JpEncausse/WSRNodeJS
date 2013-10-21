@@ -1,22 +1,5 @@
 <% layout('layouts/layout') %>
-    
-    <%- partial('fragments/navbar') %>
-
-    <div id="container" class="container-fluid">
-      <div class="row-fluid">
-        <div class="span3" id="sidebar">
-          
-          <%- partial('fragments/sidenav') %>
-          
-        </div><!--/span-->
-        <div class="span9 page">
-          
-          <h3 id="plugin-title"><%= plugin %></h3>
-          <%- plugins('/'+plugin+'/index.html') %>
-           
-        </div><!--/span-->
-      </div><!--/row-->
-
-    </div><!--/.fluid-container-->
-    
-    <%- partial('fragments/footer') %> 
+<div class="stretch col-md-8 content">
+  <h1 id="plugin-title"><%= plugin %></h1>
+  <%- plugins('/'+plugin+'/index.html') %>
+</div>

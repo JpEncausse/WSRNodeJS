@@ -1,3 +1,21 @@
+
+/**
+ * Module dependencies.
+ */
+var URL = require('url')
+  , NS = require('./namespaces')
+  ;
+
+
+/**
+ * Safe hasOwnProperty
+ * See: http://www.devthought.com/2012/01/18/an-object-is-not-a-hash/
+ */
+function has (obj, prop) {
+  return Object.prototype.hasOwnProperty.call(obj, prop);
+}
+exports.has = has;
+
 /**
  * Merge object b with object a.
  *
@@ -9,7 +27,7 @@
  *
  * merge(a, b, true);
  * // => { foo: 'bar', bar: 'baz' }
- * 
+ *
  * @param {Object} a
  * @param {Object} b
  * @param {Boolean} [noforce] Optionally, don't overwrite any existing keys in a found in b
@@ -18,15 +36,17 @@
 function merge (a, b, noforce) {
   if (a && b && a === Object(a) && b === Object(b)) {
     for (var key in b) {
-      if (noforce) {
-        if (!a.hasOwnProperty(key)) a[key] = b[key];
-      } else {
-        a[key] = b[key]
+      if (has(b, key)) {
+        if (noforce) {
+          if (!a.hasOwnProperty(key)) a[key] = b[key];
+        } else {
+          a[key] = b[key];
+        }
       }
     }
   }
   return a;
-};
+}
 exports.merge = merge;
 
 /**
@@ -52,7 +72,7 @@ function unique (array) {
     a.push(array[i]);
   }
   return a;
-};
+}
 exports.unique = unique;
 
 /**
@@ -83,3 +103,78 @@ function get(obj, subkey) {
     return null;
 }
 exports.get = get;
+
+/*
+ * Expose require('url').resolve
+ */
+function resolve (baseUrl, pathUrl) {
+  return URL.resolve(baseUrl, pathUrl);
+}
+exports.resolve = resolve;
+
+/*
+ * Check whether a given namespace URI matches the given default
+ *
+ * @param {String} URI
+ * @param {String} default, e.g., 'atom'
+ * @return {Boolean}
+ */
+function nslookup (uri, def) {
+  return NS[uri] === def;
+}
+exports.nslookup = nslookup;
+
+/*
+ * Return the "default" namespace prefix for a given namespace URI
+ *
+ * @param {String} URI
+ * @return {String}
+ */
+function nsprefix (uri) {
+  return NS[uri];
+}
+exports.nsprefix = nsprefix;
+
+/*
+ * Walk a node and re-resolve the urls using the given baseurl
+ *
+ * @param {Object} node
+ * @param {String} baseurl
+ * @return {Object} modified node
+ */
+function reresolve (node, baseurl) {
+  if (!node || !baseurl) {
+    return false; // Nothing to do.
+  }
+
+  function resolveLevel (level) {
+    var els = Object.keys(level);
+    els.forEach(function(el){
+      if (Array.isArray(level[el])) {
+        level[el].forEach(resolveLevel);
+      } else {
+        if (level[el].constructor.name === 'Object') {
+          if (el == 'logo' || el == 'icon') {
+            level[el]['#'] = URL.resolve(baseurl, level[el]['#']);
+          } else {
+            var attrs = Object.keys(level[el]);
+            attrs.forEach(function(name){
+              if (name == 'href' || name == 'src' || name == 'uri') {
+                if ('string' === typeof level[el][name]) {
+                  level[el][name] = URL.resolve(baseurl, level[el][name]);
+                }
+                else if ('#' in level[el][name]) {
+                  level[el][name]['#'] = URL.resolve(baseurl, level[el][name]['#']);
+                }
+              }
+            });
+          }
+        }
+      }
+    });
+    return level;
+  }
+
+  return resolveLevel(node);
+}
+exports.reresolve = reresolve;

@@ -27,7 +27,7 @@
           <div class="flipper">
             <div class="plugin-body">
               <div class="front">
-                <% if (flip) { %><a href="#" class="flip"><i class='icon-refresh'></i></a><% } %>
+                <% if (flip) { %><a href="#" class="flip"><span class='glyphicon glyphicon-refresh'></span></a><% } %>
                 <div class="flip-body">
                 
                       <% if (custom){ %>
@@ -56,7 +56,7 @@
               <% if (flip){ %>
               
               <div class="back">
-                <a href="#" class="flip"><i class='icon-refresh'></i></a>
+                <a href="#" class="flip"><span class='glyphicon glyphicon-refresh'></span></a>
                 <div class="flip-body">
                 <%- manager.render(key+'/portlet_back.html', { 
                   'type'       : type, 
