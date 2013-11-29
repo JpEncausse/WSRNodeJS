@@ -1,7 +1,8 @@
 {
   "bot"  : {  
     "name"      : "S.A.R.A.H." ,
-    "tagline"   : "Self Actuated Residential Automated Habitat"
+    "tagline"   : "Self Actuated Residential Automated Habitat",
+    "answers"   : "Oui|Je m'en occupe|Voilà|C'est fait"
   },
   
   "http" : {

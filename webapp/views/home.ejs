@@ -19,7 +19,7 @@
 		                <p><%= config.bot.name %> est capable d'exécuter différentes tâches décrites par des scripts.</p>
 		                <p>Les requêtes HTTP envoyées à l'adresse <code>http://ip:port/sarah/script</code> entrainent l'execution du script du même nom situé dans le répertoire <code>/plugin</code></p>
 		              </div>
-		               
+		              <%- partial('fragments/module-footer', { 'type' : '', 'key' : 'bot', 'module' : config.bot }) %>
 		            </div></div></div>
 		          </div>
 		        </li>

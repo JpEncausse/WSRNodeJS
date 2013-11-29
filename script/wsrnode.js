@@ -20,7 +20,7 @@ winston.info(" STARTING WSRNodeJS ");
 winston.info("==========================================");
 
 process.on('uncaughtException', function (err) {
-  winston.log('error','Caught exception: '+err);
+  winston.log('error','Caught exception: '+err.stack);
 });
 
 // ==========================================
@@ -77,6 +77,7 @@ SARAH.express = {
 
 // Context
 app.post('/profiles', SARAH.routes);
+app.get('/askme', SARAH.answerme);
 
 // ==========================================
 //  LOAD CONFIGURATION
@@ -92,11 +93,13 @@ app.post('/config', SARAH.ConfigManager.routes);
 var webpath = __dirname + '/../plugins';
 SARAH.PluginManager.load(webpath);
 
-app.use('/assets/',   express.static(webpath));
-app.get('/plugins/*', SARAH.PluginManager.display);
-app.get('/store',     SARAH.PluginManager.routes);
-app.get('/editor',    SARAH.PluginManager.editorGET);
-app.post('/editor',   SARAH.PluginManager.editorPOST);
+app.use ('/assets/',          express.static(webpath));
+app.get ('/plugins',          SARAH.PluginManager.list);
+app.get ('/plugins/:plugin*', SARAH.PluginManager.display);
+app.get ('/store',            SARAH.PluginManager.routes);
+app.get ('/editor',           SARAH.PluginManager.editorGET);
+app.post('/editor',           SARAH.PluginManager.editorPOST);
+app.get ('/standby',          SARAH.PluginManager.standby);
 
 // ==========================================
 //  RULE MANAGER
@@ -118,9 +121,9 @@ app.post('/upload*', function(req, res, next){
 //  PHANTOM / SCRIPT
 // ==========================================
 
-app.get('/sarah/phantom/*',  SARAH.PhantomManager.routes);
-app.get('/sarah/*',          SARAH.ScriptManager.routes);
-app.post('/sarah/*',         SARAH.ScriptManager.routes);
+app.get ('/sarah/phantom/:plugin', SARAH.PhantomManager.routes);
+app.get ('/sarah/:plugin',         SARAH.ScriptManager.routes);
+app.post('/sarah/:plugin',         SARAH.ScriptManager.routes);
 
 // ==========================================
 //  INIT MODULES

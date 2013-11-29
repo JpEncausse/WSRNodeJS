@@ -9,20 +9,16 @@ var winston = require('winston');
 
 var routes = function(req, res, next){
 
-  // Parse URL & QueryString
-  var rUrl = url.parse(req.url);
-  var rQs  = qs.parse(rUrl.query);
-  rQs.body = req.body;
-    
-  // Parse Command
-  var cmd = rUrl.pathname;
-  cmd = cmd.substring(cmd.lastIndexOf('/')+1);
-  
+  var cmd   = req.params.plugin;
+  var data  = req.query; 
+  data.body = req.body;
+
   // Dispatch to SARAH
-  SARAH.run(cmd, rQs, res);
+  SARAH.run(cmd, data, res);
 }
 
 var run = function(cmd, rQs, res, cb){
+  
   // Callback
   var callback = function(opts){
     var end = (new Date()).getTime();

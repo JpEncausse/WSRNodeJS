@@ -41,7 +41,7 @@ var run = function(cmd, options, res, callback){
     SARAH.PhantomManager.run(cmd, options, res, callback);
     return;
   }
-  
+
   winston.log('warn', 'Module not found: '+ cmd);
   if (res){ res.end(); }
 }
@@ -73,11 +73,15 @@ var dispatch = function(cmd, options, res){
   }
   
   // Write end
-  if (!skip){ res.end(options.tts); return; }
+  if (!skip){ 
+    options.tts = SARAH.PluginManager.speak(options.tts, false);
+    res.end(options.tts);
+    //return;
+  }
   if (options.quiet){ return; } 
 
   // At last try to speak
-  SARAH.speak(options.tts);
+  if (!res) SARAH.speak(options.tts);
 }
 
 // ------------------------------------------
@@ -93,9 +97,13 @@ var callback = function (err, response, body){
 
 var remote = function(qs, cb){
   var url = SARAH.ConfigManager.getConfig().http.remote;
+  var querystring = require('querystring');
+  url += '?' + querystring.stringify(qs);
+
+  winston.info('Remote: '+ url);
+
   var request = require('request');
-  winston.info('Remote: ', url, qs);
-  request({ 'uri' : url, 'qs'  : qs }, cb || callback);
+  request({ 'url' : url }, cb || callback);
 };
 
 var _key = function(key, action, mod) {
@@ -135,12 +143,24 @@ var getRSSFeed = function(url, cache){
 //  FEATURES
 // ------------------------------------------
 
+var answer = function(cb) {
+  var answers = SARAH.ConfigManager.getConfig().bot.answers.split('|');
+  var answer = answers[ Math.floor(Math.random() * answers.length)];
+  SARAH.speak(answer, cb);
+}
+
 var speak = function(tts, cb) {
-  if (!tts){ return;}
-  winston.info("Speak remote: " + tts);
-  var qs = { 'tts' : tts }; 
-  if (cb) qs.sync = true;
-  remote(qs, cb);
+  
+  var callback = function(){ SARAH.PluginManager.speak(tts, false); cb(); }
+  var t2s = SARAH.PluginManager.speak(tts, cb !== undefined);
+  if (!t2s){ if (cb) callback(); return; }
+  
+  winston.info("Speak remote: " + t2s);
+  var qs = { 'tts' : t2s }; 
+  if (cb) { qs.sync = true;
+    return remote(qs, callback);
+  }
+  remote(qs);
 };
 
 var shutUp = function() {
@@ -148,10 +168,13 @@ var shutUp = function() {
   remote({ 'notts' : 'true' });
 };
 
-var play = function(mp3) {
-  if (!mp3){ return;}
+var play = function(mp3, cb) {
+  if (!mp3){ if (cb) cb(); return;}
+  
   winston.info("Play remote: " + mp3);
-  remote({ 'play' : mp3 });
+  var qs = { 'play' : mp3 }; 
+  if (cb) qs.sync = true;
+  remote(qs, cb);
 };
 
 var pause = function(mp3) {
@@ -198,6 +221,94 @@ var activate = function(app) {
   remote({ 'activate' : app });
 }
 
+var chromeless = function(url, o, w, h, x, y){
+  var path  = require('path');
+  var spawn = require('child_process').spawn;
+  var proc  = path.normalize(__dirname + '../../../chromeless/chromeless.exe');
+  
+  var params  = ['-url', url]
+  
+  if (w !== undefined){ params.push('-w'); params.push(w); }
+  if (h !== undefined){ params.push('-h'); params.push(h); }
+  if (x !== undefined){ params.push('-x'); params.push(x); }
+  if (y !== undefined){ params.push('-y'); params.push(y); }
+  if (o !== undefined){ params.push('-opacity'); params.push(o); }
+  
+  console.log(proc, params);
+  
+  var child = spawn(proc, params);
+  child.stderr.on('data', function (data) { });
+  child.stdout.on('data', function (data) { });
+}
+
+// ------------------------------------------
+//  EVENT
+// ------------------------------------------
+
+var events = require('events');
+var ee = new events.EventEmitter();
+
+var listen = function(event, callback){
+  ee.on(event, callback);
+}
+
+var trigger = function(event, data){
+  ee.emit(event, data);
+}
+
+// ------------------------------------------
+//  ASKME
+// ------------------------------------------
+
+var stack = [];
+var options = false;
+var askme = function(tts, grammar, timeout, callback){
+  if (!grammar) { return; }
+  if (!callback){ return; }
+  if (options)  { return stack.push(arguments); }
+  
+  // Build request
+  options = { 'grammar':[], 'tags':[] }
+  if (tts) options.tts = tts;
+  for (var g in grammar){
+    options.grammar.push(g);
+    options.tags.push(grammar[g]);
+  }
+  
+  // Send request
+  remote(options);
+  
+  // Backup
+  options.rule     = grammar
+  options.callback = callback;
+  options.token    = setTimeout(function(){
+      options = false;
+      if (timeout <= 0){
+        callback(false, function(){ options = false; asknext(); }););  asknext();
+      } else {
+        SARAH.askme(tts, grammar, 0, callback);
+      }
+  }, timeout || 8000);
+}
+
+var answerme = function(req, res, next){
+  if (!options){ return; }
+  if (options.token){
+    clearTimeout(options.token);
+  }
+  
+  res.end();
+  options.callback(req.param('tag'), function(){
+    options = false; asknext();  
+  });
+}
+
+var asknext = function(){
+  if (stack.length <= 0){ return; }
+  var args = stack.shift();
+  askme(args[0], args[1], args[2], args[3])
+}
+
 // ------------------------------------------
 //  RENDER WEBPAGE
 // ------------------------------------------
@@ -223,7 +334,7 @@ var routes = function(req, res, next){
   var json = req.param('profiles');
   if (json){
     SARAH.context.profiles = JSON.parse(json);
-    winston.info('Updating profiles...');
+    winston.info('Updating profiles... ');
   }
   res.end();
 };
@@ -257,7 +368,8 @@ var SARAH = {
   'dispatch': dispatch,
   
   // Send speak command on remote
-  'speak': speak,
+  'speak' : speak,
+  'answer': answer,
   
   // Send play command on remote
   'play': play,
@@ -271,6 +383,14 @@ var SARAH = {
   // Send gesture recognition command
   'gesture': gesture,
   
+  // AskMe
+  'askme' : askme,
+  'answerme' : answerme,
+  
+  // EventEmiter
+  'listen'  : listen,
+  'trigger' : trigger,
+  
   // Keyboard remote commands
   'runApp'  : runApp,
   'activate': activate,
@@ -278,6 +398,7 @@ var SARAH = {
   'keyDown' : function(key, mod) { _key(key, 'keyDown', mod) },
   'keyUp'   : function(key, mod) { _key(key, 'keyUp', mod) },
   'keyText' : keyText,
+  'chromeless': chromeless,
   
   // General purpose remote action on WSRMacro
   'remote': remote,

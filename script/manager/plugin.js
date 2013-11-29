@@ -25,6 +25,16 @@ var routes = function(req, res, next){
   res.render('store', { 'nav' : 'store' });
 };
 
+var standby = function(req, res, next){
+  
+  var motion = req.param('motion') === 'True';
+  var data   = req.query; 
+  data.body  = req.body;
+  
+  res.end();
+  hookStandBy(motion, data);
+}
+
 // ------------------------------------------
 //  INSTALL PLUGIN
 // ------------------------------------------
@@ -189,8 +199,11 @@ var  getRemotePlugins = function(){
 /**
  * Build information for local plugins
  */
-var  getLocalPlugins = function(){
+var  cachedPlugin = false;
+var  getLocalPlugins = function(reset){
 
+  if (!reset && cachedPlugin){ return cachedPlugin; }
+  
   var local   = fs.readdirSync('./plugins');
   var config  = SARAH.ConfigManager.getConfig();
   var plugins = {};
@@ -211,6 +224,7 @@ var  getLocalPlugins = function(){
       'dl'         : rmot ? rmot.dl : ''
     };
   }
+  cachedPlugin = plugins;
   return plugins;
 }
 
@@ -220,7 +234,7 @@ var  getLocalPlugins = function(){
 var getAllPlugins = function(){
     
   // Local plugins
-  var plugins = PluginManager.getLocals();
+  var plugins = PluginManager.getLocals(true);
 
   // Remote remaining plugins
   for (var name in PluginManager.remote){
@@ -243,6 +257,29 @@ var getAllPlugins = function(){
 }
 
 // ------------------------------------------
+//  HOOKS
+// ------------------------------------------
+
+var hookSpeak = function(tts, async){
+  if (!tts) return false;
+  for(var name in PluginManager.getLocals()){
+    var plugin = SARAH.ConfigManager.getModule(name);
+    if (!plugin || !plugin.speak){ continue; }
+    tts = plugin.speak(tts, async, SARAH);
+  }
+  return tts;
+}
+
+var hookStandBy = function(motion, data){
+  for(var name in PluginManager.getLocals()){
+    var plugin = SARAH.ConfigManager.getModule(name);
+    if (!plugin || !plugin.standBy){ continue; }
+    plugin.standBy(motion, data, SARAH);
+  }
+}
+
+
+// ------------------------------------------
 //  PLUGINS WEBPAGES
 // ------------------------------------------
 // EJS Hack to retrieve content from plugin directory
@@ -261,16 +298,34 @@ var render = function(path, options){
 /**
  * Displays generic plugin page
  */
+var path  = require('path');
 var display = function(req, res, next){
 
-  var rgxplugin = /\/plugins\/(\w+)\/*/g;
-  var plugin = rgxplugin.exec(req.path);
-  if (!plugin || plugin.length != 2){ res.send(404); return; }
-
+  var plugin  = req.params.plugin;  console.log(plugin);
+  if (!plugin){ res.send(404); return; }
+  var subpath = req.path.substring(9);
+  
+  // Dedicated EJS rendering
+  if (subpath.indexOf('.ejs') > 0){
+    res.render('layouts/render', { 
+      'path'    : subpath,
+      'plugins' : render, 
+      'req'     : req
+    });
+    return;
+  }
+  
   res.render('plugins', { 
     'plugins' : render,
-    'plugin'  : plugin[1]
-  });
+    'plugin'  : plugin
+  }); 
+
+}
+
+var list =  function(req, res, next){
+  res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
+  var json = PluginManager.getLocals(true);
+  res.end(JSON.stringify(json));
 }
 
 /**
@@ -293,7 +348,6 @@ var hasIcon = function(name){
 // ------------------------------------------
 //  PUBLIC
 // ------------------------------------------
-
 
 var webpath = false;
 var SARAH = false;
@@ -330,6 +384,8 @@ var PluginManager = {
   // Routes webapp to plugins
   'display' : display,
   'render'  : render,
+  'standby' : standby,
+  'list'    : list,
   
   // Routes webapp to store
   'routes' : routes,
@@ -343,6 +399,9 @@ var PluginManager = {
   
   // Delete deep plugin's folder
   'remove': removePlugin,
+  
+  // Hook for all speak processing
+  'speak': hookSpeak,
   
   // Retrieve information of local plugins
   'getLocals': getLocalPlugins,
