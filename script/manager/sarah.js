@@ -284,7 +284,7 @@ var askme = function(tts, grammar, timeout, callback){
   options.token    = setTimeout(function(){
       options = false;
       if (timeout <= 0){
-        callback(false, function(){ options = false; asknext(); }););  asknext();
+        callback(false, function(){ options = false; asknext(); });
       } else {
         SARAH.askme(tts, grammar, 0, callback);
       }
