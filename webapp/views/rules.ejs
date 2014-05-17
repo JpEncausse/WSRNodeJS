@@ -63,8 +63,8 @@
 		  <div class="col-md-3 glyph"><img src="images/calendar.png" alt="calendrier" /> <span class="ifttt-lbl">Calendar</span></div>
 		  <div class="col-md-2"><span class="ifttt-lbl">then</span></div>
 		  <div class="col-md-3 glyph"><img src="images/speak.png" alt="vocaliser" /> <span class="ifttt-lbl">Speak</span></div> 
-		</div>
-	
+		</div> 
+	  
 	  <p>&nbsp;</p>
 		<h3>Filtres</h3>
 		<p>
@@ -109,4 +109,39 @@
 		  <a href="#" class="btn btn-blue" id="addRule">Ajouter une règle</a>
 		</p>
   </form>
+  
+	<h3>Apprentissage</h3>
+	
+	<p>
+	  Tous les appels de module sont journalisés. 
+	  Suite à un appel, SARAH essaye d'enchainer sur le module suivant.
+	  Les appels sont considérés comme similaire dans une fourchette de <code>30 minutes</code>.
+	  L'appel suivant est recherché dans une fourchette de <code>3 minutes</code>.
+	</p>
+	  
+	<table class="table table-striped table-bordered table-hover table-condensed">
+	<tr>
+	  <th>Command</th>
+	  <th>Time of Day</th>
+	  <th>Day of Week</th>
+	  <th>Day of Month</th>
+	  <th>Location</th>
+	  <th>Count</th>
+	</tr>
+	<% 
+	  var logs = SARAH.RuleManager.getLogs().toArray();
+	  for (var i = 0 ; i < logs.length ; i++){
+	    var log = logs[i];
+	%>
+	<tr>
+	  <td><%= log.cmd %></td>
+	  <td><%= Math.round(log.timeOfDay / 3600) %>h<%= Math.round((log.timeOfDay % 3600) / 60) %></td>
+	  <td><%= log.dayOfWeek %></td>
+	  <td><%= log.dayOfMonth %></td>
+	  <td><%= log.location %></td>
+	  <td><%= log.count %></td>
+	</tr>
+	<% } %>
+	</table>
+  
 </div>

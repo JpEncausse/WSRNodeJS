@@ -23,11 +23,14 @@ var run = function(cmd, options, res, callback){
   var xtend  = require('../lib/extend.js');
   
   // Backup last command
-  if (res){ // Main request
-    SARAH.context.last =  { 
+  if (res){ 
+    var last = { 
       'cmd'    : cmd, 
       'options': xtend.extend(true, {}, options)
     };
+    
+    // Store and log last
+    SARAH.context.last = SARAH.RuleManager.log(last); 
   }
   
   // Run modules script
@@ -72,16 +75,23 @@ var dispatch = function(cmd, options, res){
     return;
   }
   
+  // Dispatch to rules
+  if (SARAH.RuleManager.next(SARAH.context.last)){
+    if (!skip){ res.end(); }
+    return;
+  }
+  
   // Write end
   if (!skip){ 
     options.tts = SARAH.PluginManager.speak(options.tts, false);
     res.end(options.tts);
-    //return;
   }
+  
   if (options.quiet){ return; } 
 
   // At last try to speak
   if (!res) SARAH.speak(options.tts);
+  
 }
 
 // ------------------------------------------
@@ -142,26 +152,48 @@ var getRSSFeed = function(url, cache){
 // ------------------------------------------
 //  FEATURES
 // ------------------------------------------
+/*
+var _speech = [];
+var _speaking = false;
+*/
+var speak = function(tts, cb) {
+
+  var callback = function(){ SARAH.PluginManager.speak(tts, false); cb(); }
+  var t2s = SARAH.PluginManager.speak(tts, cb !== undefined);
+  if (!t2s){ if (cb) callback(); return; }
+  
+  
+  var qs = { 'tts' : t2s }; 
+  if (cb) {
+    qs.sync = true;
+    winston.info("Speak remote: " + t2s + " with callback");
+    return remote(qs, callback);
+  }
+  
+  // Buffer speech async
+  /*
+  if (_speaking){ 
+    winston.info("Push remote: " + t2s + " no callback");
+    _speech.push(tts); return;
+  }*/
+  
+  // Fake async
+  /*
+  _speaking = true;
+  setTimeout(function(){
+  */
+    winston.info("Speak remote: " + t2s + " no callback");
+    remote(qs /*, function(){ _speaking = false; speak(_speech.shift()); }*/);
+  /*
+  },1);
+  */
+};
 
 var answer = function(cb) {
   var answers = SARAH.ConfigManager.getConfig().bot.answers.split('|');
   var answer = answers[ Math.floor(Math.random() * answers.length)];
   SARAH.speak(answer, cb);
 }
-
-var speak = function(tts, cb) {
-  
-  var callback = function(){ SARAH.PluginManager.speak(tts, false); cb(); }
-  var t2s = SARAH.PluginManager.speak(tts, cb !== undefined);
-  if (!t2s){ if (cb) callback(); return; }
-  
-  winston.info("Speak remote: " + t2s);
-  var qs = { 'tts' : t2s }; 
-  if (cb) { qs.sync = true;
-    return remote(qs, callback);
-  }
-  remote(qs);
-};
 
 var shutUp = function() {
   winston.info("ShutUp remote");
@@ -268,6 +300,7 @@ var askme = function(tts, grammar, timeout, callback){
   if (options)  { return stack.push(arguments); }
   
   // Build request
+  console.log('AskMe', options);
   options = { 'grammar':[], 'tags':[] }
   if (tts) options.tts = tts;
   for (var g in grammar){
@@ -284,11 +317,11 @@ var askme = function(tts, grammar, timeout, callback){
   options.token    = setTimeout(function(){
       options = false;
       if (timeout <= 0){
-        callback(false, function(){ options = false; asknext(); });
+        callback(false, end);
       } else {
         SARAH.askme(tts, grammar, 0, callback);
       }
-  }, timeout || 8000);
+  }, timeout || 16000);
 }
 
 var answerme = function(req, res, next){
@@ -296,17 +329,22 @@ var answerme = function(req, res, next){
   if (options.token){
     clearTimeout(options.token);
   }
-  
+
   res.end();
-  options.callback(req.param('tag'), function(){
-    options = false; asknext();  
-  });
+  options.callback(req.param('dictation') || req.param('tag'), end);
 }
 
 var asknext = function(){
-  if (stack.length <= 0){ return; }
+  if (stack.length <= 0){
+     remote({ 'context' : 'default' });  return; 
+  }
   var args = stack.shift();
   askme(args[0], args[1], args[2], args[3])
+}
+
+var end = function(){ 
+  options = false; 
+  asknext(); 
 }
 
 // ------------------------------------------
@@ -339,6 +377,16 @@ var routes = function(req, res, next){
   res.end();
 };
 
+var getProfile = function(name){
+  var profiles = SARAH.context.profiles;
+  if (!profiles){ return false; }
+  for(var i = 0; i < profiles.length; i++){
+    if (profiles[i].Name == name){ return profiles[i]; }
+  }
+  console.log('Profile not found', name, profiles);
+  return false;
+}
+
 // ------------------------------------------
 //  PUBLIC
 // ------------------------------------------
@@ -360,6 +408,7 @@ var SARAH = {
   
   // An object to store contextual stuff
   'context' : {},
+  'getProfile' : getProfile,
   
   // Routes context
   'routes' : routes,

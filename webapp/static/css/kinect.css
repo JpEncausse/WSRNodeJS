@@ -5,6 +5,10 @@
 .page   { opacity: 1; }
 .navbar { position: absolute; }
 
+.col-md-2 { display: none; }
+.content  { width: 100%;  background: #000; }
+
+
 .kinect {
   position: absolute;
   width:  320px;
@@ -59,10 +63,10 @@
   height: 768px;
 }
 
-#holo1 { top:    40px; left:  125px; -webkit-transform: rotate(-45deg);  }
-#holo2 { top:    40px; right: 125px; -webkit-transform: rotate( 45deg);  }
-#holo3 { bottom: 40px; left:  125px; -webkit-transform: rotate(-135deg); }
-#holo4 { bottom: 40px; right: 125px; -webkit-transform: rotate(135deg); }
+#holo1 { top:    92px; left:  215px; -webkit-transform: rotate(-45deg);  /* background : red;  */}
+#holo2 { top:    92px; right: 215px; -webkit-transform: rotate( 45deg);  /* background : green;*/}
+#holo3 { bottom: 92px; left:  215px; -webkit-transform: rotate(-135deg); /* background : blue; */}
+#holo4 { bottom: 92px; right: 215px; -webkit-transform: rotate(135deg);  /* background : pink; */}
 #holoC { 
   position: absolute;
   top: 50%; left: 50%;

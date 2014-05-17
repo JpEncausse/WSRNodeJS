@@ -74,6 +74,93 @@ var iterate = function(cmd, options){
 }
 
 // ------------------------------------------
+//  SORTING MANAGER
+// ------------------------------------------
+
+var seek   = 1*60*3;  //  3 minutes
+var scope  = 1*60*30; // 15 minutes
+var moment = require('moment'); moment.lang('fr');
+
+var log = function(action){
+
+  var now = moment();
+  var day = moment().startOf('day');
+  
+  action.timeOfDay  = now.diff(day) / 1000;
+  action.dayOfWeek  = now.day();
+  action.dayOfMonth = now.date();
+  action.location   = 'house';
+  action.count      = 0;
+  
+  // Try to find same spot within large scope
+  var node = logs.find(action)
+  if (node){ 
+    action = node.value; action.count++;
+    console.log('Found: ', action); 
+  }
+  
+  // Then add to list
+  logs.add(action);
+  return action;
+}
+
+var next = function(action){ return; // See sarah.js > dispatch()
+  if (!action) return;
+  
+  var frame = [];
+  _next(action, frame, action.timeOfDay,  1);
+  _next(action, frame, action.timeOfDay, -1);
+  
+  frame.sort(function(a, b){ return b.timeOfDay - a.timeOfDay; })
+  
+  for(var i = 0 ; i < frame.length ; i++){
+    console.log(action.cmd + ' => ' + frame[i].cmd + ' ('+Math.abs(action.timeOfDay - frame[i].timeOfDay)+')');
+    SARAH.call(frame[i].cmd, frame[i].options);
+  }
+}
+
+var _next = function(action, frame, time, direction){
+  if (!action){ return; }
+  if (action.value){ action = action.value; }
+  if (Math.abs(action.timeOfDay - time) > seek){ return; }
+  
+  if (action.timeOfDay != time){ // avoid root
+    frame.push(action);
+  }
+  
+  if (direction > 0) {
+    _next(logs.findLeastGreaterThan(action), frame, time, direction);
+  } else {
+    _next(logs.findGreatestLessThan(action), frame, time, direction);
+  }
+}
+
+var equals = function(x, y){
+  return compare(x,y) == 0;
+}
+
+var compare = function(x, y){
+  var tod = x.timeOfDay  - y.timeOfDay;
+  var dow = x.dayOfWeek  - y.dayOfWeek;
+  var dom = x.dayOfMonth - y.dayOfMonth;
+  var cnt = x.count - y.count;
+  
+  // FIXME: compare the options
+  
+  if (tod < scope ){
+    if (x.location == y.location && x.cmd == y.cmd){ return 0; }
+    if (dom != 0){ return dom; }
+    if (dow != 0){ return dow; }
+    if (cnt != 0){ return cnt; }
+    return x.cmd.localeCompare(y.cmd);
+  }
+  else { return tod; }
+}
+
+var SortedSet = require("collections/sorted-set");
+var logs = new SortedSet([], equals, compare);
+
+// ------------------------------------------
 //  PUBLIC
 // ------------------------------------------
 
@@ -93,7 +180,12 @@ var RuleManager = {
   'routes' : routes,
   
   // Save custom config
-  'save': saveRules
+  'save': saveRules,
+  
+  // Log called command
+  'log' : log,
+  'next': next,
+  'getLogs': function(){ return logs }
 }
 
 /**

@@ -274,6 +274,7 @@ var ConfigManager = {
       xtend.extend(true, config, loadProperties());
       xtend.extend(true, config, loadPlugins());
       xtend.extend(true, config, loadCustoms());
+      config.bot.version = "3.1.5";
     } 
     catch(ex) { winston.log('error', 'Error while loding properties:', ex.message);  }
     return ConfigManager;

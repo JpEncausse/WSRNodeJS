@@ -301,7 +301,7 @@ var render = function(path, options){
 var path  = require('path');
 var display = function(req, res, next){
 
-  var plugin  = req.params.plugin;  console.log(plugin);
+  var plugin  = req.params.plugin;
   if (!plugin){ res.send(404); return; }
   var subpath = req.path.substring(9);
   
@@ -310,7 +310,8 @@ var display = function(req, res, next){
     res.render('layouts/render', { 
       'path'    : subpath,
       'plugins' : render, 
-      'req'     : req
+      'req'     : req,
+      'res'     : res
     });
     return;
   }

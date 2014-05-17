@@ -9,7 +9,7 @@
         
           <h2><script>document.write(moment().format("HH:mm"));</script></h2>
             
-          <p class="text-center" style="font-size: 20px; padding: 10px;"><a href="/home" class="btn btn-red" style="padding: 5px 30px">Accueil</a></p>
+          <p class="text-center" style="font-size: 20px; padding: 10px;"><a href="/home" class="btn btn-red" style="padding: 5px 30px">Accueil</a><br/><span style="font-size: 11px;">version <%= config.bot.version %></span></p>
             
           <ul class="nav">
             <li <%= nav == 'store' ? "class='active'" : "" %>><a href="/store" id="storeMenu">Store</a></li>
