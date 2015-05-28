@@ -319,9 +319,9 @@ var askme = function(tts, grammar, timeout, callback){
       if (timeout <= 0){
         callback(false, end);
       } else {
-        SARAH.askme(tts, grammar, 0, callback);
+        SARAH.askme(tts, grammar, -timeout, callback);
       }
-  }, timeout || 16000);
+  }, Math.abs(timeout) || 16000);
 }
 
 var answerme = function(req, res, next){
